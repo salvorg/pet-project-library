@@ -10,11 +10,14 @@ export class Author {
   books: Book[];
 
   @Column()
-  title: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Column()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   image: string | null;
 }
