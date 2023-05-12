@@ -24,12 +24,7 @@ export class AuthorsService {
   }
 
   async getOne(id: number): Promise<Author> {
-    const author = await this.authorsRepo.findOne({ where: { id }, relations: ['books'] });
-
-    if (!author) {
-      throw new NotFoundException('Author not found!');
-    }
-    return author;
+    return await this.getAuthorById(id);
   }
 
   async createAuthor(body: CreateAuthorDto, file: Express.Multer.File): Promise<Author> {
@@ -58,13 +53,13 @@ export class AuthorsService {
     author.description = body.description;
     author.image = file ? '/uploads/authors/images/' + file.filename : null;
 
-    return this.authorsRepo.save(author);
+    return await this.authorsRepo.save(author);
   }
 
   async removeAuthor(id: number): Promise<{ message: string }> {
     await this.getAuthorById(id);
     await this.authorsRepo.delete(id);
-    return { message: 'Author successfully deleted' };
+    return { message: 'Author successfully deleted!' };
   }
 
   private async getAuthorById(id: number): Promise<Author> {
@@ -74,7 +69,7 @@ export class AuthorsService {
     });
 
     if (!author) {
-      throw new NotFoundException("Author that you've wanted to update was not found!");
+      throw new NotFoundException('Author not found!');
     }
     return author;
   }
