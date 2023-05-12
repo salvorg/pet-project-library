@@ -21,6 +21,9 @@ export class Book {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   image: string | null;
+
+  @Column()
+  availableCopies: number;
 }
