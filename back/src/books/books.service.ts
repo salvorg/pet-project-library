@@ -54,10 +54,9 @@ export class BooksService {
 
   async updateBook(id: number, file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
     const book = await this.getBookById(id);
-    const [authors, genres] = await Promise.all([this.findAuthorsById(body.authors), this.findGenresById(body.genres)]);
 
-    book.authors = authors;
-    book.genres = genres;
+    book.authors = await this.findAuthorsById(body.authors);
+    book.genres = await this.findGenresById(body.genres);
     book.title = body.title;
     book.description = body.description;
     book.availableCopies = body.availableCopies;
