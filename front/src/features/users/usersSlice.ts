@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginError, User, ValidationRegister } from '../../../types';
+import { LoginError, User, ValidationError } from '../../../types';
 import { editUserProfile, googleLogin, login, register } from './usersThunks';
 import { HYDRATE } from 'next-redux-wrapper';
 import { AppStore } from '@/app/store';
@@ -7,7 +7,7 @@ import { AppStore } from '@/app/store';
 interface UserState {
   user: User | null;
   registerLoading: boolean;
-  registerError: ValidationRegister | null;
+  registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: LoginError | null;
   editLoading: boolean;

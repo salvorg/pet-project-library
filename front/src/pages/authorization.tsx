@@ -65,13 +65,14 @@ const Authorization = () => {
         </Box>
         {error && (
           <Alert severity="error" sx={{ mt: 3, width: '100%' }}>
-            {error.error}
+            {error.message}
           </Alert>
         )}
         <Box component="form" onSubmit={submitFormHandler} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
+                fullWidth
                 label="Email"
                 name="email"
                 autoComplete="new-email"
@@ -81,6 +82,7 @@ const Authorization = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                fullWidth
                 name="password"
                 label="Password"
                 type="password"
@@ -103,5 +105,4 @@ const Authorization = () => {
     </Container>
   );
 };
-
 export default Authorization;

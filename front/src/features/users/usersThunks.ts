@@ -1,19 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  LoginError,
-  LoginMutation,
-  ProfileMutation,
-  RegisterMutation,
-  User,
-  ValidationError,
-  ValidationRegister,
-} from '../../../types';
+import { LoginError, LoginMutation, ProfileMutation, RegisterMutation, User, ValidationError } from '../../../types';
 import axiosApi from '../../../axiosApi';
 import { isAxiosError } from 'axios';
 import { unsetUser } from './usersSlice';
 import { AppState } from '@/app/store';
 
-export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: ValidationRegister }>(
+export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: ValidationError }>(
   'users/register',
   async (registerMutation, { rejectWithValue }) => {
     try {
@@ -21,7 +13,7 @@ export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: 
       return response.data;
     } catch (e) {
       if (isAxiosError(e) && e.response && e.response.status === 400) {
-        return rejectWithValue(e.response.data as ValidationRegister);
+        return rejectWithValue(e.response.data as ValidationError);
       }
       throw e;
     }
