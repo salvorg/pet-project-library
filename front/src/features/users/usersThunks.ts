@@ -1,11 +1,19 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginError, LoginMutation, ProfileMutation, RegisterMutation, User, ValidationError } from '../../../types';
+import {
+  LoginError,
+  LoginMutation,
+  ProfileMutation,
+  RegisterMutation,
+  User,
+  ValidationError,
+  ValidationRegister,
+} from '../../../types';
 import axiosApi from '../../../axiosApi';
 import { isAxiosError } from 'axios';
 import { unsetUser } from './usersSlice';
-import { RootState } from '@/app/store';
+import { AppState } from '@/app/store';
 
-export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: ValidationError }>(
+export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: ValidationRegister }>(
   'users/register',
   async (registerMutation, { rejectWithValue }) => {
     try {
@@ -13,7 +21,7 @@ export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: 
       return response.data;
     } catch (e) {
       if (isAxiosError(e) && e.response && e.response.status === 400) {
-        return rejectWithValue(e.response.data as ValidationError);
+        return rejectWithValue(e.response.data as ValidationRegister);
       }
       throw e;
     }
@@ -42,7 +50,7 @@ export const login = createAsyncThunk<User, LoginMutation, { rejectValue: LoginE
       const response = await axiosApi.post<User>('users/login', loginInfo);
       return response.data;
     } catch (e) {
-      if (isAxiosError(e) && e.response && e.response.status === 401) {
+      if (isAxiosError(e) && e.response && e.response.status === 404) {
         return rejectWithValue(e.response.data as LoginError);
       }
       throw e;
@@ -50,14 +58,10 @@ export const login = createAsyncThunk<User, LoginMutation, { rejectValue: LoginE
   },
 );
 
-export const logout = createAsyncThunk<void, void, { state: RootState }>(
-  'users/logout',
-  async (_, { dispatch, getState }) => {
-    const user = getState().users.user;
-    await axiosApi.delete('users/sessions', { headers: { Authorization: user?.token } });
-    dispatch(unsetUser());
-  },
-);
+export const logout = createAsyncThunk<void, void, { state: AppState }>('users/logout', async (_, { dispatch }) => {
+  await axiosApi.delete('users/logout');
+  dispatch(unsetUser());
+});
 
 export const editUserProfile = createAsyncThunk<User, ProfileMutation, { rejectValue: ValidationError }>(
   'users/edit',

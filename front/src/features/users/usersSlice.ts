@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { LoginError, User, ValidationError } from '../../../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LoginError, User, ValidationRegister } from '../../../types';
 import { editUserProfile, googleLogin, login, register } from './usersThunks';
-import { RootState } from '@/app/store';
 import { HYDRATE } from 'next-redux-wrapper';
+import { AppStore } from '@/app/store';
 
 interface UserState {
   user: User | null;
   registerLoading: boolean;
-  registerError: ValidationError | null;
+  registerError: ValidationRegister | null;
   loginLoading: boolean;
   loginError: LoginError | null;
   editLoading: boolean;
@@ -22,7 +22,7 @@ const initialState: UserState = {
   editLoading: false,
 };
 
-export const usersSlice = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
@@ -32,8 +32,11 @@ export const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(HYDRATE, (state, action) => {
-      // @ts-ignore
-      return action.payload.user;
+      const { payload } = action as PayloadAction<AppStore>;
+      return {
+        ...state,
+        ...payload.users,
+      };
     });
 
     builder.addCase(register.pending, (state) => {
@@ -52,6 +55,7 @@ export const usersSlice = createSlice({
     builder
       .addCase(login.pending, (state) => {
         state.loginLoading = true;
+        state.registerError = null;
       })
       .addCase(login.fulfilled, (state, { payload: user }) => {
         state.loginLoading = false;
@@ -93,9 +97,9 @@ export const usersReducer = usersSlice.reducer;
 
 export const { unsetUser } = usersSlice.actions;
 
-export const selectUser = (state: RootState) => state.users.user;
-export const selectRegisterLoading = (state: RootState) => state.users.registerLoading;
-export const selectRegisterError = (state: RootState) => state.users.registerError;
-export const selectLoginLoading = (state: RootState) => state.users.loginLoading;
-export const selectLoginError = (state: RootState) => state.users.loginError;
-export const selectEditLoading = (state: RootState) => state.users.editLoading;
+export const selectUser = (state: AppStore) => state.users.user;
+export const selectRegisterLoading = (state: AppStore) => state.users.registerLoading;
+export const selectRegisterError = (state: AppStore) => state.users.registerError;
+export const selectLoginLoading = (state: AppStore) => state.users.loginLoading;
+export const selectLoginError = (state: AppStore) => state.users.loginError;
+export const selectEditLoading = (state: AppStore) => state.users.editLoading;

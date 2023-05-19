@@ -1,54 +1,50 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { Action, combineReducers } from 'redux';
+import { configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
-import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 import { usersReducer } from '@/features/users/usersSlice';
-import { booksReducer } from '@/features/books/booksSlice';
 
-const createNoopStorage = () => {
-  return {
-    getItem(_key: any) {
-      return Promise.resolve(null);
-    },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
-    },
-    removeItem(_key: any) {
-      return Promise.resolve();
-    },
-  };
-};
-
-const storage = typeof window === 'undefined' ? createWebStorage('local') : createNoopStorage();
 const persistConfig = {
-  key: 'users',
+  key: 'library',
+  whitelist: ['user'],
   storage,
-  whitelist: ['users'],
 };
-
 const rootReducer = combineReducers({
-  users: usersReducer,
-  books: booksReducer,
+  users: persistReducer(persistConfig, usersReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-const makeStore = () =>
+const makeConfiguredStore = () =>
   configureStore({
-    reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
+    reducer: rootReducer,
     devTools: true,
   });
 
-export const store = makeStore();
-export const wrapper = createWrapper<RootStore>(makeStore);
+export const makeStore = () => {
+  const isServer = typeof window === 'undefined';
+  if (isServer) {
+    return makeConfiguredStore();
+  } else {
+    // we need it only on client side
+    // const persistedReducer =
+    let store: any = configureStore({
+      reducer: rootReducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+          },
+        }),
+      // devTools: process.env.NODE_ENV !== 'production',
+    });
+    store.__persistor = persistStore(store); // Nasty hack
+    return store;
+  }
+};
 
-export const persistor = persistStore(store);
-export type RootStore = ReturnType<typeof makeStore>;
-export type RootState = ReturnType<RootStore['getState']>;
-export type AppDispatch = RootStore['dispatch'];
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore['getState']>;
+export type AppDispatch = ReturnType<AppStore>['dispatch'];
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action>;
+
+export const wrapper = createWrapper<AppStore>(makeStore);
