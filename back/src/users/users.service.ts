@@ -35,11 +35,20 @@ export class UsersService {
       throw new NotFoundException('This email not found!');
     }
 
+    const isMatch = await existUser.checkPassword(password);
+
+    if (!isMatch) {
+      throw new NotFoundException('Password is wrong');
+    }
+
     await existUser.generateToken();
     return await this.usersRepo.save(existUser);
   }
 
-  private async getUserByEmail(email: string) {
-    return;
+  async logoutUser(id: number) {
+    const user = await this.usersRepo.findOne({ where: { id } });
+    await user.generateToken();
+    await this.usersRepo.save(user);
+    return { message: 'Logout success' };
   }
 }

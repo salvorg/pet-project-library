@@ -1,9 +1,11 @@
-import { Body, ClassSerializerInterceptor, Controller, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
+import { TokenAuthGuard } from '../auth/token-auth.guard';
+import { CurrentUser } from '../auth/currentUser.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -23,5 +25,11 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   async loginUser(@Body() body: { email: string; password: string }) {
     return this.usersService.loginUser(body.email, body.password);
+  }
+
+  @Delete('logout')
+  @UseGuards(TokenAuthGuard)
+  async logoutUser(@CurrentUser() user: User) {
+    return this.usersService.logoutUser(user.id);
   }
 }
