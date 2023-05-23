@@ -5,7 +5,8 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { selectLoginError } from '@/features/users/usersSlice';
 import { googleLogin, login } from '@/features/users/usersThunks';
-import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
+import GoogleIcon from '@mui/icons-material/Google';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -30,10 +31,12 @@ const Authorization = () => {
     await router.push('/');
   };
 
-  const googleLoginHandler = async (credentials: string) => {
-    await dispatch(googleLogin(credentials)).unwrap();
-    await router.push('/');
-  };
+  const googleLoginHandler = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      await dispatch(googleLogin(tokenResponse.access_token)).unwrap();
+      await router.push('/');
+    },
+  });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,17 +54,11 @@ const Authorization = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box sx={{ pt: 2 }}>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              if (credentialResponse.credential) {
-                void googleLoginHandler(credentialResponse.credential);
-              }
-            }}
-            onError={() => {
-              console.log('Login failed');
-            }}
-          />
+        <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Avatar sx={{ bgcolor: 'primary.main', mb: 1 }}>
+            <GoogleIcon onClick={() => googleLoginHandler()} />
+          </Avatar>
+          Sign up with Google
         </Box>
         {error && (
           <Alert severity="error" sx={{ mt: 3, width: '100%' }}>
