@@ -21,6 +21,12 @@ export class UsersController {
     return this.usersService.registerUser(body.email, body.firstName, body.lastName, body.password);
   }
 
+  @Post('google-authentication')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async registerUserWithGoogle(@Body() body: { accessToken: string }) {
+    return this.usersService.registerUserWithGoogle(body.accessToken);
+  }
+
   @Post('login')
   @UseInterceptors(ClassSerializerInterceptor)
   async loginUser(@Body() body: { email: string; password: string }) {
