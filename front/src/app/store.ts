@@ -25,8 +25,6 @@ export const makeStore = () => {
   if (isServer) {
     return makeConfiguredStore();
   } else {
-    // we need it only on client side
-    // const persistedReducer =
     let store: any = configureStore({
       reducer: rootReducer,
       middleware: (getDefaultMiddleware) =>
@@ -37,7 +35,7 @@ export const makeStore = () => {
         }),
       // devTools: process.env.NODE_ENV !== 'production',
     });
-    store.__persistor = persistStore(store); // Nasty hack
+    store.__persistor = persistStore(store);
     return store;
   }
 };
