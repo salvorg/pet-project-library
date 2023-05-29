@@ -9,6 +9,6 @@ export class Genre {
   @Column()
   name: string;
 
-  @ManyToMany(() => Book, (book) => book.genres)
+  @ManyToMany(() => Book, (book) => book.genres, { nullable: true })
   books: Book[];
 }

@@ -7,18 +7,18 @@ export class Book {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => Author, (author) => author.books)
+  @ManyToMany(() => Author, (author) => author.books, { nullable: true })
   @JoinTable()
-  authors: Author[];
+  authors: Author[] | null;
 
-  @ManyToMany(() => Genre, (genre) => genre.books)
+  @ManyToMany(() => Genre, (genre) => genre.books, { nullable: true })
   @JoinTable()
-  genres: Genre[];
+  genres: Genre[] | null;
 
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column({ nullable: true })
@@ -26,4 +26,7 @@ export class Book {
 
   @Column({ default: 0 })
   availableCopies: number;
+
+  @Column({ nullable: true })
+  publisher: string;
 }
