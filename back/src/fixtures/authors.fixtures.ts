@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Author } from '../authors/author.entity';
+import { Author } from '../routes/authors/author.entity';
 
 @Injectable()
 export class AuthorsFixtures {

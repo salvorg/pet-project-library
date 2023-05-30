@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Genre } from '../genres/genre.entity';
+import { Genre } from '../routes/genres/genre.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

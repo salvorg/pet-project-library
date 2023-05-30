@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Genre } from '../genres/genre.entity';
+import { Genre } from '../routes/genres/genre.entity';
 import { AuthorsFixtures } from './authors.fixtures';
 import { UsersFixtures } from './users.fixtures';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Author } from '../authors/author.entity';
-import { Book } from '../books/book.entity';
-import { User } from '../users/user.entity';
+import { Author } from '../routes/authors/author.entity';
+import { Book } from '../routes/books/book.entity';
+import { User } from '../routes/users/user.entity';
 import { GenresFixtures } from './genres.fixtures';
 import { BooksFixtures } from './books.fixtures';
 
