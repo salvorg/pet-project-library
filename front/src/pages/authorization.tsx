@@ -54,12 +54,6 @@ const Authorization = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Avatar sx={{ bgcolor: 'primary.main', mb: 1 }}>
-            <GoogleIcon onClick={() => googleLoginHandler()} />
-          </Avatar>
-          Sign up with Google
-        </Box>
         {error && (
           <Alert severity="error" sx={{ mt: 3, width: '100%' }}>
             {error.message}
@@ -92,6 +86,12 @@ const Authorization = () => {
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>
+          <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Avatar sx={{ bgcolor: 'darkred', mb: 1, cursor: 'pointer' }}>
+              <GoogleIcon onClick={() => googleLoginHandler()} />
+            </Avatar>
+            Sign up with Google
+          </Box>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="/register">Or sign up</Link>
