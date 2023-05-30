@@ -4,6 +4,7 @@ import { Action, combineReducers } from 'redux';
 import { configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { usersReducer } from '@/features/users/usersSlice';
+import { authorsReducer } from '@/features/authors/authorsSlice';
 
 const persistConfig = {
   key: 'library',
@@ -12,6 +13,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   users: persistReducer(persistConfig, usersReducer),
+  authors: authorsReducer,
 });
 
 const makeConfiguredStore = () =>
