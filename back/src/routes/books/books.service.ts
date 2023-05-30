@@ -32,11 +32,7 @@ export class BooksService {
   }
 
   async createBook(file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
-    const existingBook = await this.booksRepo.findOne({ where: { title: body.title } });
-
-    if (existingBook) {
-      throw new BadRequestException(`${body.title} already exists`);
-    }
+    await this.checkForExistingBook(body.title, body.description, body.publisher);
 
     const [authors, genres] = await Promise.all([this.findAuthorsById(body.authors), this.findGenresById(body.genres)]);
 
@@ -66,9 +62,19 @@ export class BooksService {
   }
 
   async removeBook(id: number): Promise<{ message: string }> {
-    await this.getBookById(id);
+    const book = await this.getBookById(id);
+    book.authors = [];
+    await this.booksRepo.save(book);
     await this.authorsRepo.delete(id);
     return { message: 'Book successfully deleted!' };
+  }
+
+  async checkForExistingBook(title: string, description: string, publisher: string): Promise<void> {
+    const existingBook = await this.booksRepo.findOne({ where: { title, description, publisher } });
+
+    if (existingBook) {
+      throw new BadRequestException(`${title} already exists`);
+    }
   }
 
   private async getBookById(id: number): Promise<Book> {
@@ -81,37 +87,43 @@ export class BooksService {
     return book;
   }
 
-  private async findAuthorsById(idArray: number[]): Promise<Author[]> {
-    const authors: Author[] = [];
+  private async findAuthorsById(idArray: number[] | null): Promise<Author[] | null> {
+    if (idArray === null) {
+      return null;
+    } else {
+      const authors: Author[] = [];
 
-    for (let i = 0; i < idArray.length; i++) {
-      const author = await this.authorsRepo.findOne({ where: { id: idArray[i] } });
-      if (author) {
-        authors.push(author);
+      for (let i = 0; i < idArray.length; i++) {
+        const author = await this.authorsRepo.findOne({ where: { id: idArray[i] } });
+        if (author) {
+          authors.push(author);
+        }
       }
-    }
 
-    if (!authors.length) {
-      throw new NotFoundException('Authors not found');
+      if (!authors.length) {
+        throw new NotFoundException('Authors not found');
+      }
+      return authors;
     }
-
-    return authors;
   }
 
-  private async findGenresById(idArray: number[]): Promise<Genre[]> {
-    const genres: Genre[] = [];
+  private async findGenresById(idArray: number[] | null): Promise<Genre[] | null> {
+    if (idArray === null) {
+      return null;
+    } else {
+      const genres: Genre[] = [];
 
-    for (let i = 0; i < idArray.length; i++) {
-      const genre = await this.genresRepo.findOne({ where: { id: idArray[i] } });
-      if (genre) {
-        genres.push(genre);
+      for (let i = 0; i < idArray.length; i++) {
+        const genre = await this.genresRepo.findOne({ where: { id: idArray[i] } });
+        if (genre) {
+          genres.push(genre);
+        }
       }
-    }
 
-    if (!genres.length) {
-      throw new NotFoundException('Genres not found');
+      if (!genres.length) {
+        throw new NotFoundException('Genres not found');
+      }
+      return genres;
     }
-
-    return genres;
   }
 }

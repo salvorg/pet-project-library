@@ -1,7 +1,8 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Exclude } from 'class-transformer';
+import { BookBorrowing } from '../bookBorrowings/bookBorrowing.entity';
 
 const SALT_WORK_FACTOR = 10;
 
@@ -34,6 +35,9 @@ export class User {
     enum: ['user', 'admin'],
   })
   role: string;
+
+  @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.borrower)
+  bookBorrowings: BookBorrowing[];
 
   @Column({ nullable: true })
   googleId: string;

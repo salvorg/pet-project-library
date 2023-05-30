@@ -29,16 +29,15 @@ export class AuthorsService {
 
   async createAuthor(body: CreateAuthorDto, file: Express.Multer.File): Promise<Author> {
     const existingAuthor = await this.authorsRepo.findOne({
-      where: { firstName: body.firstName, lastName: body.lastName },
+      where: { name: body.name },
     });
 
     if (existingAuthor) {
-      throw new BadRequestException(`${body.firstName} ${body.lastName} already exists!`);
+      throw new BadRequestException(`${body.name} already exists!`);
     }
 
     const author = await this.authorsRepo.create({
-      firstName: body.firstName,
-      lastName: body.lastName,
+      name: body.name,
       description: body.description,
       image: file ? '/uploads/authors/images/' + file.filename : null,
     });
@@ -48,8 +47,7 @@ export class AuthorsService {
   async updateAuthor(body: CreateAuthorDto, file: Express.Multer.File, id: number): Promise<Author> {
     const author = await this.getAuthorById(id);
 
-    author.firstName = body.firstName;
-    author.lastName = body.lastName;
+    author.name = body.name;
     author.description = body.description;
     author.image = file ? '/uploads/authors/images/' + file.filename : null;
 
@@ -57,7 +55,9 @@ export class AuthorsService {
   }
 
   async removeAuthor(id: number): Promise<{ message: string }> {
-    await this.getAuthorById(id);
+    const author = await this.getAuthorById(id);
+    author.books = [];
+    await this.authorsRepo.save(author);
     await this.authorsRepo.delete(id);
     return { message: 'Author successfully deleted!' };
   }

@@ -6,14 +6,11 @@ export class Author {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => Book, (book) => book.authors)
-  books: Book[];
+  @ManyToMany(() => Book, (book) => book.authors, { nullable: true })
+  books: Book[] | null;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  name: string;
 
   @Column()
   description: string;
