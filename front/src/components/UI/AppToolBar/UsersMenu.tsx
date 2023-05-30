@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { User } from '../../../../types';
-import { Avatar, Button, Menu, MenuItem } from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { logout } from '@/features/users/usersThunks';
 import { useAppDispatch } from '@/app/hooks';
-import { apiURL } from '../../../../constants';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -31,10 +30,11 @@ const UserMenu: React.FC<Props> = ({ user }) => {
     <>
       <Button onClick={handleClick} color="inherit">
         {user.firstName}
-        <Avatar src={user.googleId ? user.avatar : apiURL + '/' + user.avatar} alt={user.avatar} sx={{ ml: 1 }} />
+        {/*<Avatar src={user.googleId ? user.avatar : apiURL + '/' + user.avatar} alt={user.avatar} sx={{ ml: 1 }} />*/}
       </Button>
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={() => router.push('/')}>Add new artist</MenuItem>
+        {user.role === 'admin' && <MenuItem onClick={() => router.push('/admin')}>Admin panel</MenuItem>}
+        <MenuItem onClick={() => router.push('/my-profile')}>My profile</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

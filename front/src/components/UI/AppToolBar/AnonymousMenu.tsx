@@ -5,10 +5,10 @@ const AnonymousMenu = () => {
   return (
     <div>
       <Link href="/authorization">
-        <button>Login</button>
+        <button className="auth-button">Login</button>
       </Link>
       <Link href="/register">
-        <button>Sign up</button>
+        <button className="auth-button">Sign up</button>
       </Link>
     </div>
   );
