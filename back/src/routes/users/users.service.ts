@@ -70,8 +70,6 @@ export class UsersService {
           password: randomUUID(),
         });
 
-        console.log(user);
-
         await user.generateToken();
         return await this.usersRepo.save(user);
       }

@@ -4,8 +4,8 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
-import { TokenAuthGuard } from '../auth/token-auth.guard';
-import { CurrentUser } from '../auth/currentUser.decorator';
+import { TokenAuthGuard } from '../../auth/token-auth.guard';
+import { CurrentUser } from '../../auth/currentUser.decorator';
 
 @Controller('users')
 export class UsersController {

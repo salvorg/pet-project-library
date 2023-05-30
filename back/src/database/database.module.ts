@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Author } from '../authors/author.entity';
-import { Book } from '../books/book.entity';
-import { Genre } from '../genres/genre.entity';
-import { User } from '../users/user.entity';
-import { BookBorrowingEntity } from '../bookBorrowings/bookBorrowing.entity';
+import { Author } from '../routes/authors/author.entity';
+import { Book } from '../routes/books/book.entity';
+import { Genre } from '../routes/genres/genre.entity';
+import { User } from '../routes/users/user.entity';
+import { BookBorrowingEntity } from '../routes/bookBorrowings/bookBorrowing.entity';
 
 @Module({
   imports: [
