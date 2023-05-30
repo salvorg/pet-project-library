@@ -40,3 +40,13 @@ export interface ProfileMutation {
   firstName: string;
   country: string;
 }
+
+export interface Author {
+  name: string;
+  description: string;
+  image: string | null;
+}
+
+export class AuthorApi extends Author {
+  id: number;
+}
