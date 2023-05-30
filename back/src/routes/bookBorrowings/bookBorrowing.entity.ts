@@ -1,20 +1,19 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { User } from '../users/user.entity';
-import { JoinColumn } from 'typeorm/browser';
 import { Book } from '../books/book.entity';
 
 @Entity()
-export class BookBorrowingEntity {
+export class BookBorrowing {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'user' })
-  user: User;
+  @JoinColumn({ name: 'borrower' })
+  borrower: User;
 
   @ManyToOne(() => Book)
-  @JoinColumn({ name: 'book' })
-  book: Book;
+  @JoinColumn({ name: 'borrowed' })
+  borrowed: Book;
 
   @CreateDateColumn()
   borrowDate: Date;
