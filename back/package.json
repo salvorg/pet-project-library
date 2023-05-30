@@ -18,6 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "makemigrations": "npm run typeorm migration:generate -- -d ./typeOrm.config.ts src/database/migrations/auto  && prettier --write \"src/database/migrations/*.ts\"",
+    "migrate": "npm run typeorm migration:run -- -d ./typeOrm.config.ts",
+    "revert": "npm run typeorm migration:revert -- -d ./typeOrm.config.ts",
     "cli": "ts-node src/cli.ts"
   },
   "dependencies": {
