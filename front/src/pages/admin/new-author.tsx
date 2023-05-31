@@ -3,7 +3,7 @@ import { useAppDispatch } from '@/app/hooks';
 import { useRouter } from 'next/router';
 import { Author } from '../../../types';
 import AuthorForm from '@/components/Forms/AuthorForm';
-import { Container, Grid, Typography } from '@mui/material';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import { createAuthor } from '@/features/authors/authorsThunks';
 
 const NewAuthor = () => {
@@ -21,12 +21,21 @@ const NewAuthor = () => {
 
   return (
     <Container maxWidth="sm">
-      <Grid item xs={6}>
-        <Typography variant="h4" sx={{ mb: 2 }}>
-          Add new author:
-        </Typography>
-        <AuthorForm onSubmit={onFormSubmit} />
-      </Grid>
+      <Box
+        style={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Grid item xs={6}>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Add new author:
+          </Typography>
+          <AuthorForm onSubmit={onFormSubmit} />
+        </Grid>
+      </Box>
     </Container>
   );
 };
