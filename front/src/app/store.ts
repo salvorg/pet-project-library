@@ -5,15 +5,18 @@ import { configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { usersReducer } from '@/features/users/usersSlice';
 import { authorsReducer } from '@/features/authors/authorsSlice';
+import { booksReducer } from '@/features/books/booksSlice';
 
 const persistConfig = {
   key: 'library',
   whitelist: ['user'],
   storage,
 };
+
 const rootReducer = combineReducers({
   users: persistReducer(persistConfig, usersReducer),
   authors: authorsReducer,
+  books: booksReducer,
 });
 
 const makeConfiguredStore = () =>
@@ -44,7 +47,7 @@ export const makeStore = () => {
 
 export type AppStore = ReturnType<typeof makeStore>;
 export type AppState = ReturnType<AppStore['getState']>;
-export type AppDispatch = ReturnType<AppStore>['dispatch'];
+export type AppDispatch = AppStore['dispatch'];
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action>;
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export const wrapper = createWrapper<AppStore>(makeStore, { debug: true });

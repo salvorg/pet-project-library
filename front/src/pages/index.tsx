@@ -1,24 +1,20 @@
-import { useAppSelector } from '@/app/hooks';
-import { selectUser } from '@/features/users/usersSlice';
-import { Button } from '@mui/material';
-import { wrapper } from '@/app/store';
-import { fetchAllBooks } from '@/features/books/booksThunks';
-import { selectBooks } from '@/features/books/booksSlice';
+import BooksCards from '@/components/Cards/BooksCards';
 
-export default function Home(props: any) {
-  const books = useAppSelector(selectBooks);
-
-  console.log(books);
+export default function Home() {
   return (
     <>
-      <div>Hello World</div>
-      <Button onClick={() => console.log(props.user)}>Show user</Button>
+      <BooksCards />
     </>
   );
 }
 
 // export const getServerSideProps = wrapper.getServerSideProps((store) => async () => {
 //   await store.dispatch(fetchAllBooks());
-//   const user = useAppSelector(selectUser);
-//   return { props: { user } };
+//   return { props: {} };
+// });
+
+// export const getStaticProps = wrapper.getStaticProps((store) => async () => {
+//   console.log('asdasdasdasdasdasd');
+//   const books = await store.dispatch(fetchAllBooks());
+//   return { props: { books } };
 // });
