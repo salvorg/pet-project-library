@@ -24,11 +24,48 @@ export class BooksService {
       throw new NotFoundException('No books found!');
     }
 
-    return books;
+    const booksApi = [];
+
+    for (let i = 0; i < books.length; i++) {
+      const authors = [];
+      for (let j = 0; j < books[i].authors.length; j++) {
+        authors.push(books[i].authors[j].name);
+      }
+      const genres = [];
+      for (let k = 0; k < books[i].genres.length; k++) {
+        genres.push(books[i].genres[k].name);
+      }
+      booksApi.push({
+        id: books[i].id,
+        authors,
+        genres,
+        title: books[i].title,
+        description: books[i].description,
+        image: books[i].image,
+        availableCopies: books[i].availableCopies,
+        publisher: books[i].publisher,
+      });
+    }
+
+    return booksApi;
   }
 
   async getOne(id: number): Promise<Book> {
-    return await this.getBookById(id);
+    const book = await this.getBookById(id);
+
+    const authors = [];
+    for (let j = 0; j < book.authors.length; j++) {
+      authors.push(book.authors[j].name);
+    }
+    const genres = [];
+    for (let k = 0; k < book.genres.length; k++) {
+      genres.push(book.genres[k].name);
+    }
+
+    book.authors = authors;
+    book.genres = genres;
+
+    return book;
   }
 
   async createBook(file: Express.Multer.File, body: CreateBookDto): Promise<Book> {

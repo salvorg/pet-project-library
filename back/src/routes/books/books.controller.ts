@@ -22,7 +22,7 @@ export class BooksController {
     return this.booksService.getAll();
   }
 
-  @Get(':id')
+  @Get('/:id')
   async getOne(@Param('id') id: number) {
     return this.booksService.getOne(id);
   }
