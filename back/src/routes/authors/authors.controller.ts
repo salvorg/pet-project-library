@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Book } from '../books/book.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,8 +29,8 @@ export class AuthorsController {
   ) {}
 
   @Get()
-  async getAll() {
-    return this.authorsService.getAll();
+  async getAll(@Query('search') search: string) {
+    return this.authorsService.getAll(search);
   }
 
   @Get(':id')

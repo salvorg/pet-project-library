@@ -14,7 +14,30 @@ export class AuthorsService {
     private readonly booksRepo: Repository<Book>,
   ) {}
 
-  async getAll(): Promise<Author[]> {
+  async getAll(search: string): Promise<Author[]> {
+    if (search) {
+      const authors = await this.authorsRepo
+        .createQueryBuilder('author')
+        .select('author')
+        .where('author.name ILIKE :query', { query: `%${search}%` })
+        .getMany();
+
+      if (!authors.length) {
+        throw new NotFoundException('No matches!');
+      }
+
+      const authorsApi = [];
+
+      for (let i = 0; i < authors.length; i++) {
+        authorsApi.push({
+          id: authors[i].id,
+          label: authors[i].name,
+        });
+      }
+
+      return authorsApi;
+    }
+
     const authors = await this.authorsRepo.find({ relations: ['books'] });
 
     if (!authors.length) {
