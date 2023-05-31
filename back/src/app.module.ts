@@ -15,7 +15,7 @@ import { UsersController } from './routes/users/users.controller';
 import { UsersService } from './routes/users/users.service';
 import { User } from './routes/users/user.entity';
 import { GoogleBooksApiController } from './fixtures/googleBooksApi.controller';
-import { BookBorrowingEntity } from './routes/bookBorrowings/bookBorrowing.entity';
+import { BookBorrowing } from './routes/bookBorrowings/bookBorrowing.entity';
 import { SeedCommand } from './fixtures/seed.command';
 import { FixturesService } from './fixtures/fixtures.service';
 import { UsersFixtures } from './fixtures/users.fixtures';
@@ -27,7 +27,7 @@ import { BooksFixtures } from './fixtures/books.fixtures';
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
-    TypeOrmModule.forFeature([User, Author, Book, Genre, BookBorrowingEntity]),
+    TypeOrmModule.forFeature([User, Author, Book, Genre, BookBorrowing]),
   ],
   controllers: [UsersController, AuthorsController, BooksController, GenresController, GoogleBooksApiController],
   providers: [

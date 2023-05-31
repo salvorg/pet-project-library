@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { Book } from '../books/book.entity';
-import { BookBorrowingEntity } from './bookBorrowing.entity';
+import { BookBorrowing } from './bookBorrowing.entity';
 
 @Injectable()
 export class BookBorrowingsService {
@@ -12,8 +12,8 @@ export class BookBorrowingsService {
     private readonly usersRepo: Repository<User>,
     @InjectRepository(Book)
     private readonly booksRepo: Repository<Book>,
-    @InjectRepository(BookBorrowingEntity)
-    private readonly borrowingsRepo: Repository<BookBorrowingEntity>,
+    @InjectRepository(BookBorrowing)
+    private readonly borrowingsRepo: Repository<BookBorrowing>,
   ) {}
 
   async getAll() {

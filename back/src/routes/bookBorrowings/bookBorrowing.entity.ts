@@ -8,12 +8,12 @@ export class BookBorrowing {
   id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'borrower' })
-  borrower: User;
+  @JoinColumn({ name: 'user' })
+  user: User;
 
   @ManyToOne(() => Book)
-  @JoinColumn({ name: 'borrowed' })
-  borrowed: Book;
+  @JoinColumn({ name: 'book' })
+  book: Book;
 
   @CreateDateColumn()
   borrowDate: Date;

@@ -16,8 +16,8 @@ export class Book {
   @JoinTable()
   genres: Genre[] | null;
 
-  @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.book)
-  bookBorrowings: BookBorrowing[];
+  @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.book, { nullable: true })
+  bookBorrowings: BookBorrowing[] | null;
 
   @Column()
   title: string;
