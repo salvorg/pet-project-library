@@ -6,6 +6,7 @@ import { createWrapper } from 'next-redux-wrapper';
 import { usersReducer } from '@/features/users/usersSlice';
 import { authorsReducer } from '@/features/authors/authorsSlice';
 import { booksReducer } from '@/features/books/booksSlice';
+import { genresReducer } from '@/features/genres/genresSlice';
 
 const persistConfig = {
   key: 'library',
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   users: persistReducer(persistConfig, usersReducer),
   authors: authorsReducer,
   books: booksReducer,
+  genres: genresReducer,
 });
 
 const makeConfiguredStore = () =>
