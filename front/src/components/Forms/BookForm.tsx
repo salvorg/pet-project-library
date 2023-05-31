@@ -73,10 +73,10 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
       <Grid container direction="column" spacing={2}>
         <Grid item xs>
           <Autocomplete
-            freeSolo
+            disablePortal
             options={foundAuthors}
             value={selectedAuthor}
-            getOptionLabel={(option) => option.label}
+            getOptionLabel={(option: AuthorMutation) => option.label}
             renderInput={(params) => <TextField {...params} label="Authors" onChange={handleAutocompleteChange} />}
           />
         </Grid>
