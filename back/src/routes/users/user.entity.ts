@@ -36,8 +36,8 @@ export class User {
   })
   role: string;
 
-  @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.borrower)
-  bookBorrowings: BookBorrowing[];
+  @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.user, { nullable: true })
+  bookBorrowings: BookBorrowing[] | null;
 
   @Column({ nullable: true })
   googleId: string;
