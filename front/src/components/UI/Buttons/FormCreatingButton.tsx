@@ -7,7 +7,7 @@ interface Props {
 
 const FormCreatingButton: React.FC<Props> = ({ creating }) => {
   return (
-    <LoadingButton loading={creating} type="submit" variant="contained" sx={{ backgroundColor: '#94704e' }}>
+    <LoadingButton fullWidth loading={creating} type="submit" variant="contained" sx={{ backgroundColor: '#d0c4f4' }}>
       Create
     </LoadingButton>
   );
