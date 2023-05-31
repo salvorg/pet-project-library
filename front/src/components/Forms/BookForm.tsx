@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Grid, TextField } from '@mui/material';
+import { Autocomplete, Button, Grid, TextField } from '@mui/material';
 import FileInput from '@/components/UI/FileInput/FileInput';
 import FormCreatingButton from '@/components/UI/Buttons/FormCreatingButton';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -17,7 +17,7 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
   const creating = useAppSelector(selectAuthorCreating);
   const [authors, setAuthors] = useState<AuthorMutation[]>([]);
   const [authorsMatch, setAuthorsMatch] = useState<string>('');
-  const [selectedAuthor, setSelectedAuthor] = useState<AuthorMutation | null>(null);
+  const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
   const [genres, setGenres] = useState<number[] | null>(null);
   const [state, setState] = useState<BookMutation>({
     authors: [],
@@ -60,6 +60,26 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
     //   });
   };
 
+  const addMoreAuthors = () => {
+    setSelectedAuthors((prevAuthors) => [...prevAuthors, '']);
+  };
+
+  const removeAuthor = (index: number) => {
+    setSelectedAuthors((prevAuthors) => {
+      const updatedAuthors = [...prevAuthors];
+      updatedAuthors.splice(index, 1); // Удаление выбранного автора по индексу
+      return updatedAuthors;
+    });
+  };
+
+  const handleSelectedAuthorChange = (index: number, value: string) => {
+    setSelectedAuthors((prevAuthors) => {
+      const updatedAuthors = [...prevAuthors];
+      updatedAuthors[index] = value;
+      return updatedAuthors;
+    });
+  };
+
   const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     setState((prevState) => ({
@@ -71,16 +91,43 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
   return (
     <form autoComplete="off" onSubmit={submitFormHandler}>
       <Grid container direction="column" spacing={2}>
+        {/*<Grid item xs>*/}
+        {/*  <Autocomplete*/}
+        {/*    freeSolo*/}
+        {/*    options={foundAuthors.map((option) => {*/}
+        {/*      setSelectedAuthor((prevState) => [...prevState, option.id]);*/}
+        {/*      return option.label;*/}
+        {/*    })}*/}
+        {/*    // value={selectedAuthor}*/}
+        {/*    // getOptionLabel={foundAuthors.map((option) => option.label)}*/}
+        {/*    renderInput={(params) => <TextField {...params} label="Authors" onChange={handleAutocompleteChange} />}*/}
+        {/*  />*/}
+        {/*  <Button type="button">add more authors</Button>*/}
+        {/*</Grid>*/}
+        {selectedAuthors.map((author, index) => (
+          <Grid item xs key={index}>
+            <Autocomplete
+              freeSolo
+              options={foundAuthors.map((option) => option.label)}
+              value={author}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Authors"
+                  onChange={(e) => handleSelectedAuthorChange(index, e.target.value)}
+                />
+              )}
+            />
+            <Button type="button" color="warning" onClick={() => removeAuthor(index)}>
+              Remove
+            </Button>
+          </Grid>
+        ))}
         <Grid item xs>
-          <Autocomplete
-            disablePortal
-            options={foundAuthors}
-            value={selectedAuthor}
-            getOptionLabel={(option: AuthorMutation) => option.label}
-            renderInput={(params) => <TextField {...params} label="Authors" onChange={handleAutocompleteChange} />}
-          />
+          <Button type="button" onClick={addMoreAuthors}>
+            Add More Authors
+          </Button>
         </Grid>
-
         <Grid item xs>
           <TextField
             fullWidth
