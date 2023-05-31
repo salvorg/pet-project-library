@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Grid, TextField } from '@mui/material';
+import FormCreatingButton from '@/components/UI/Buttons/FormCreatingButton';
+import { useAppSelector } from '@/app/hooks';
+import { selectGenreCreating } from '@/features/genres/genresSlice';
 
 interface Props {
   onSubmit: (genre: string) => void;
 }
 
 const GenreForm: React.FC<Props> = ({ onSubmit }) => {
-  // const creating = useAppSelector(selectGenreCreating);
+  const creating = useAppSelector(selectGenreCreating);
   const [state, setState] = useState<string>('');
 
   const submitFormHandler = (e: React.FormEvent) => {
@@ -32,6 +35,9 @@ const GenreForm: React.FC<Props> = ({ onSubmit }) => {
             name="name"
             required
           />
+        </Grid>
+        <Grid item xs>
+          <FormCreatingButton creating={creating} />
         </Grid>
       </Grid>
     </form>
