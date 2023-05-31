@@ -22,7 +22,7 @@ const initialState: UserState = {
   editLoading: false,
 };
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
