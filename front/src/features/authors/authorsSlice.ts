@@ -1,10 +1,11 @@
-import { AuthorApi, ValidationError } from '../../../types';
+import { AuthorApi, AuthorMutation, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { createAuthor } from '@/features/authors/authorsThunks';
+import { createAuthor, searchAuthors } from '@/features/authors/authorsThunks';
 import { AppState } from '@/app/store';
 
 interface AuthorsSlice {
   authors: AuthorApi[];
+  found: AuthorMutation[];
   fetching: boolean;
   fetchingOne: boolean;
   creating: boolean;
@@ -15,6 +16,7 @@ interface AuthorsSlice {
 
 const initialState: AuthorsSlice = {
   authors: [],
+  found: [],
   fetching: false,
   fetchingOne: false,
   creating: false,
@@ -37,9 +39,23 @@ const authorsSlice = createSlice({
     builder.addCase(createAuthor.rejected, (state) => {
       state.creating = false;
     });
+
+    builder.addCase(searchAuthors.pending, (state) => {
+      state.creating = true;
+    });
+    builder.addCase(searchAuthors.fulfilled, (state, { payload: authors }) => {
+      state.creating = false;
+      state.found = authors;
+    });
+    builder.addCase(searchAuthors.rejected, (state) => {
+      state.creating = false;
+    });
   },
 });
 
 export const authorsReducer = authorsSlice.reducer;
+
+export const selectAuthors = (state: AppState) => state.authors.authors.authors;
+export const selectFoundAuthors = (state: AppState) => state.authors.found;
 
 export const selectAuthorCreating = (state: AppState) => state.authors.creating;

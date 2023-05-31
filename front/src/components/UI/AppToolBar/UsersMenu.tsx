@@ -34,6 +34,9 @@ const UserMenu: React.FC<Props> = ({ user }) => {
       </Button>
       <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {user.role === 'admin' && <MenuItem onClick={() => router.push('/admin')}>Admin panel</MenuItem>}
+        {user.role === 'admin' && <MenuItem onClick={() => router.push('/admin/new-author')}>Add new author</MenuItem>}
+        {user.role === 'admin' && <MenuItem onClick={() => router.push('/admin/new-genre')}>Add new genre</MenuItem>}
+        {user.role === 'admin' && <MenuItem onClick={() => router.push('/admin/new-book')}>Add new book</MenuItem>}
         <MenuItem onClick={() => router.push('/my-profile')}>My profile</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
