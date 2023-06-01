@@ -15,9 +15,11 @@ const BooksCards = () => {
   }, [dispatch]);
 
   return (
-    <Grid container direction="row" spacing={2}>
+    <Grid container direction="row" spacing={2} sx={{ mt: 3, ml: 2 }}>
       {books.map((book: BookApi) => (
-        <BookCard key={book.id} book={book} />
+        <Grid key={book.id} item>
+          <BookCard key={book.id} book={book} />
+        </Grid>
       ))}
     </Grid>
   );

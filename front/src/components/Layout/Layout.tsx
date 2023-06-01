@@ -9,7 +9,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
       <Grid item>
         <AppToolbar />
       </Grid>
-      <Grid item sx={{ flexGrow: 1 }}>
+      <Grid item sx={{ flexGrow: 1, p: 3 }}>
         {children}
       </Grid>
       <Grid item>

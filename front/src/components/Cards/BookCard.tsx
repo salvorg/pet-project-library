@@ -3,7 +3,7 @@ import { Card, CardActions, CardContent, CardHeader, CardMedia, Grid, Typography
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { BookApi } from '../../../types';
 import { useRouter } from 'next/router';
@@ -17,40 +17,46 @@ const BookCard: React.FC<Props> = ({ book }) => {
   const URL = 'http://localhost:8000/';
 
   return (
-    <Grid item>
-      <Card sx={{ maxWidth: 345 }}>
+    <>
+      <Card sx={{ maxWidth: 250 }}>
         <CardHeader
           action={
             <IconButton aria-label="settings">
               <MoreVertIcon />
             </IconButton>
           }
-          title={book.title}
-          subheader={
-            book.authors
-              ? book.authors.length === 1
-                ? `author: ${book.authors[0]}`
-                : `authors: ${book.authors.join(', ')}`
-              : null
+          title={
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {book.title}
+            </Typography>
           }
         />
         <CardMedia component="img" width="50" height="200" image={URL + book.image} alt={book.title} />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary"></Typography>
+        <CardContent sx={{ flexGrow: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            {book.authors
+              ? book.authors.length === 1
+                ? `author: ${book.authors[0]}`
+                : `authors: ${book.authors.join(', ')}`
+              : null}
+          </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-          <IconButton onClick={() => router.push(`/books/${book.id}`)}>
-            <KeyboardArrowRightIcon />
-          </IconButton>
+          <Grid container justifyContent="space-between">
+            <IconButton aria-label="add to favorites">
+              <FavoriteIcon />
+            </IconButton>
+            <IconButton aria-label="share" sx={{ borderRadius: '10%' }}>
+              <HandshakeIcon />
+              borrow
+            </IconButton>
+            <IconButton onClick={() => router.push(`/books/${book.id}`)}>
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          </Grid>
         </CardActions>
       </Card>
-    </Grid>
+    </>
   );
 };
 

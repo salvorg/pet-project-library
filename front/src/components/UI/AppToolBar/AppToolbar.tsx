@@ -7,6 +7,7 @@ import AnonymousMenu from '@/components/UI/AppToolBar/AnonymousMenu';
 import Link from 'next/link';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import Search from '@/components/UI/SearchDrawer/Search';
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
@@ -45,16 +46,9 @@ const AppToolbar = () => {
         </Toolbar>
       </AppBar>
       {showSearchState && (
-        <div>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur deleniti distinctio ea expedita
-          impedit inventore ipsum magnam nulla officiis, quas quia quidem, quod recusandae suscipit? Architecto qui
-          recusandae reprehenderit. A accusamus animi aperiam assumenda at dolore doloribus ducimus eaque enim, error
-          esse est ex expedita molestias nam obcaecati officiis placeat porro quod rerum saepe sapiente vitae
-          voluptates. Ab adipisci at commodi, delectus doloribus eius eligendi ex exercitationem facere magnam natus
-          optio perferendis perspiciatis possimus quidem quod voluptate voluptatem! Ab alias aliquam animi architecto
-          consequatur cupiditate delectus distinctio exercitationem explicabo fugit natus nihil nostrum officiis optio
-          porro praesentium, tenetur ut.
-        </div>
+        <Grid container>
+          <Search />
+        </Grid>
       )}
     </>
   );
