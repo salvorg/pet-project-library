@@ -70,15 +70,23 @@ export class BooksService {
 
   async createBook(file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
     await this.checkForExistingBook(body.title, body.description, body.publisher);
+    const parsedAuthors = JSON.parse(body.authors);
+    const parsedGenres = JSON.parse(body.genres);
 
-    const [authors, genres] = await Promise.all([this.findAuthorsById(body.authors), this.findGenresById(body.genres)]);
+    console.log(parsedAuthors);
 
-    const book = await this.booksRepo.create({
+    const [authors, genres] = await Promise.all([
+      this.findAuthorsById(parsedAuthors),
+      this.findGenresById(parsedGenres),
+    ]);
+
+    const book = this.booksRepo.create({
       authors,
       genres,
       title: body.title,
       description: body.description,
-      availableCopies: body.availableCopies,
+      availableCopies: parseFloat(body.availableCopies),
+      publisher: body.publisher,
       image: file ? '/uploads/books/images/' + file.filename : null,
     });
 
@@ -88,11 +96,15 @@ export class BooksService {
   async updateBook(id: number, file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
     const book = await this.getBookById(id);
 
-    book.authors = await this.findAuthorsById(body.authors);
-    book.genres = await this.findGenresById(body.genres);
+    const parsedAuthors = JSON.parse(body.authors);
+    const parsedGenres = JSON.parse(body.genres);
+
+    book.authors = await this.findAuthorsById(parsedAuthors);
+    book.genres = await this.findGenresById(parsedGenres);
     book.title = body.title;
     book.description = body.description;
-    book.availableCopies = body.availableCopies;
+    book.availableCopies = parseFloat(body.availableCopies);
+    book.publisher = body.publisher;
     book.image = file ? '/uploads/books/images/' + file.filename : null;
 
     return await this.booksRepo.save(book);
@@ -124,14 +136,14 @@ export class BooksService {
     return book;
   }
 
-  private async findAuthorsById(idArray: number[] | null): Promise<Author[] | null> {
+  private async findAuthorsById(idArray: string[] | null): Promise<Author[] | null> {
     if (idArray === null) {
       return null;
     } else {
       const authors: Author[] = [];
 
       for (let i = 0; i < idArray.length; i++) {
-        const author = await this.authorsRepo.findOne({ where: { id: idArray[i] } });
+        const author = await this.authorsRepo.findOne({ where: { name: idArray[i] } });
         if (author) {
           authors.push(author);
         }
@@ -144,14 +156,14 @@ export class BooksService {
     }
   }
 
-  private async findGenresById(idArray: number[] | null): Promise<Genre[] | null> {
+  private async findGenresById(idArray: string[] | null): Promise<Genre[] | null> {
     if (idArray === null) {
       return null;
     } else {
       const genres: Genre[] = [];
 
       for (let i = 0; i < idArray.length; i++) {
-        const genre = await this.genresRepo.findOne({ where: { id: idArray[i] } });
+        const genre = await this.genresRepo.findOne({ where: { name: idArray[i] } });
         if (genre) {
           genres.push(genre);
         }

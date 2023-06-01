@@ -1,10 +1,13 @@
 import { Entity } from 'typeorm';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Entity()
 export class CreateBookDto {
-  authors: number[] | null;
-  genres: number[] | null;
+  @IsNotEmpty()
+  authors: string;
+
+  @IsNotEmpty()
+  genres: string;
 
   @IsNotEmpty()
   @IsString()
@@ -15,8 +18,8 @@ export class CreateBookDto {
   description: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  availableCopies: number;
+  @IsString()
+  availableCopies: string;
 
   @IsNotEmpty()
   @IsString()
