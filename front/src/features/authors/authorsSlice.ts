@@ -7,6 +7,7 @@ interface AuthorsSlice {
   authors: AuthorApi[];
   found: AuthorMutation[];
   fetching: boolean;
+  searching: boolean;
   fetchingOne: boolean;
   creating: boolean;
   updating: boolean;
@@ -18,6 +19,7 @@ const initialState: AuthorsSlice = {
   authors: [],
   found: [],
   fetching: false,
+  searching: false,
   fetchingOne: false,
   creating: false,
   updating: false,
@@ -41,14 +43,14 @@ const authorsSlice = createSlice({
     });
 
     builder.addCase(searchAuthors.pending, (state) => {
-      state.creating = true;
+      state.searching = true;
     });
     builder.addCase(searchAuthors.fulfilled, (state, { payload: authors }) => {
-      state.creating = false;
+      state.searching = false;
       state.found = authors;
     });
     builder.addCase(searchAuthors.rejected, (state) => {
-      state.creating = false;
+      state.searching = false;
     });
   },
 });

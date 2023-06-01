@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../../../axiosApi';
-import { BookApi, BookMutation, ValidationError } from '../../../types';
+import { BookApi, Book, ValidationError } from '../../../types';
 import { isAxiosError } from 'axios';
 
 export const fetchAllBooks = createAsyncThunk<BookApi[]>('books/fetchAll', async () => {
@@ -14,18 +14,22 @@ export const fetchOneBook = createAsyncThunk<BookApi, string>('books/fetchOneBoo
   return response.data;
 });
 
-export const createBook = createAsyncThunk<void, BookMutation, { rejectValue: ValidationError }>(
+export const createBook = createAsyncThunk<void, Book, { rejectValue: ValidationError }>(
   'books/create',
   async (book, { rejectWithValue }) => {
     try {
       const formData = new FormData();
-      const keys = Object.keys(book) as (keyof BookMutation)[];
+      const keys = Object.keys(book) as (keyof Book)[];
 
       keys.forEach((key) => {
         const value = book[key];
 
         if (value !== null) {
-          formData.append(key, JSON.stringify(value));
+          if (Array.isArray(value) || typeof value === 'number') {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
         }
       });
 
