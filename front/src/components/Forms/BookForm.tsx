@@ -1,83 +1,71 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Button, Grid, TextField } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import FileInput from '@/components/UI/FileInput/FileInput';
 import FormCreatingButton from '@/components/UI/Buttons/FormCreatingButton';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { selectAuthorCreating, selectFoundAuthors } from '@/features/authors/authorsSlice';
-import { AuthorMutation, BookMutation } from '../../../types';
+import { AuthorMutation, Book, GenresApi } from '../../../types';
 import { searchAuthors } from '@/features/authors/authorsThunks';
+import MultiCompliter from '@/components/MultiCompliter/MultiCompliter';
+import { searchGenres } from '@/features/genres/genresThunks';
+import { selectFoundGenres } from '@/features/genres/genresSlice';
 
 interface Props {
-  onSubmit: (book: BookMutation) => void;
+  onSubmit: (book: Book) => void;
 }
 
 const BookForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
   const foundAuthors: AuthorMutation[] = useAppSelector(selectFoundAuthors);
+  const foundGenres: GenresApi[] = useAppSelector(selectFoundGenres);
   const creating = useAppSelector(selectAuthorCreating);
-  const [authors, setAuthors] = useState<AuthorMutation[]>([]);
-  const [authorsMatch, setAuthorsMatch] = useState<string>('');
+
+  const [match, setMatch] = useState<string>('');
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
-  const [genres, setGenres] = useState<number[] | null>(null);
-  const [state, setState] = useState<BookMutation>({
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [state, setState] = useState<Book>({
     authors: [],
     genres: [],
     title: '',
     description: '',
     availableCopies: 0,
     publisher: '',
+    image: null,
   });
 
   useEffect(() => {
-    if (authorsMatch.length) {
-      dispatch(searchAuthors(authorsMatch));
+    if (match.length) {
+      dispatch(searchAuthors(match));
+      dispatch(searchGenres(match));
     }
-  }, [dispatch, authorsMatch]);
+  }, [dispatch, match]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let parsedValue: string | number = value;
+
+    if (!isNaN(parseFloat(value)) && isFinite(Number(value))) {
+      parsedValue = parseFloat(value);
+    }
+
     setState((prevState) => {
-      return { ...prevState, [name]: value };
+      return { ...prevState, [name]: parsedValue };
     });
   };
 
   const submitFormHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(state);
+    const finalState = {
+      ...state,
+      authors: selectedAuthors,
+      genres: selectedGenres,
+    };
+    onSubmit(finalState);
   };
 
   const handleAutocompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-
-    setAuthorsMatch(value);
-
-    // dispatch(searchAuthors(value))
-    //   .then((authors: AuthorMutation) => {
-    //     setAuthors((prevState) => [...prevState, authors]);
-    //   })
-    //   .catch((error: Error) => {
-    //     console.error('Ошибка при выполнении запроса на поиск авторов:', error);
-    //   });
-  };
-
-  const addMoreAuthors = () => {
-    setSelectedAuthors((prevAuthors) => [...prevAuthors, '']);
-  };
-
-  const removeAuthor = (index: number) => {
-    setSelectedAuthors((prevAuthors) => {
-      const updatedAuthors = [...prevAuthors];
-      updatedAuthors.splice(index, 1); // Удаление выбранного автора по индексу
-      return updatedAuthors;
-    });
-  };
-
-  const handleSelectedAuthorChange = (index: number, value: string) => {
-    setSelectedAuthors((prevAuthors) => {
-      const updatedAuthors = [...prevAuthors];
-      updatedAuthors[index] = value;
-      return updatedAuthors;
-    });
+    setMatch(value);
   };
 
   const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,51 +79,32 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
   return (
     <form autoComplete="off" onSubmit={submitFormHandler}>
       <Grid container direction="column" spacing={2}>
-        {/*<Grid item xs>*/}
-        {/*  <Autocomplete*/}
-        {/*    freeSolo*/}
-        {/*    options={foundAuthors.map((option) => {*/}
-        {/*      setSelectedAuthor((prevState) => [...prevState, option.id]);*/}
-        {/*      return option.label;*/}
-        {/*    })}*/}
-        {/*    // value={selectedAuthor}*/}
-        {/*    // getOptionLabel={foundAuthors.map((option) => option.label)}*/}
-        {/*    renderInput={(params) => <TextField {...params} label="Authors" onChange={handleAutocompleteChange} />}*/}
-        {/*  />*/}
-        {/*  <Button type="button">add more authors</Button>*/}
-        {/*</Grid>*/}
-        {selectedAuthors.map((author, index) => (
-          <Grid item xs key={index}>
-            <Autocomplete
-              freeSolo
-              options={foundAuthors.map((option) => option.label)}
-              value={author}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Authors"
-                  onChange={(e) => handleSelectedAuthorChange(index, e.target.value)}
-                />
-              )}
-            />
-            <Button type="button" color="warning" onClick={() => removeAuthor(index)}>
-              Remove
-            </Button>
-          </Grid>
-        ))}
         <Grid item xs>
-          <Button type="button" onClick={addMoreAuthors}>
-            Add More Authors
-          </Button>
+          <MultiCompliter
+            label="Choose authors"
+            options={foundAuthors}
+            selectedState={selectedAuthors}
+            setSelectedState={setSelectedAuthors}
+            handleAutocompleteChange={handleAutocompleteChange}
+          />
+        </Grid>
+        <Grid item xs>
+          <MultiCompliter
+            label="Choose genres"
+            options={foundGenres}
+            selectedState={selectedGenres}
+            setSelectedState={setSelectedGenres}
+            handleAutocompleteChange={handleAutocompleteChange}
+          />
         </Grid>
         <Grid item xs>
           <TextField
             fullWidth
-            id="name"
-            label="Name"
-            value={state?.title}
+            id="title"
+            label="Title"
+            value={state.title}
             onChange={inputChangeHandler}
-            name="name"
+            name="title"
             required
           />
         </Grid>
@@ -146,9 +115,10 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
             rows={5}
             id="description"
             label="Description"
-            value={state?.description}
+            value={state.description}
             onChange={inputChangeHandler}
             name="description"
+            required
           />
         </Grid>
         <Grid item xs>
@@ -156,9 +126,11 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
             fullWidth
             id="availableCopies"
             label="Available copies"
-            value={state?.availableCopies}
+            value={state.availableCopies}
             onChange={inputChangeHandler}
             name="availableCopies"
+            type="number"
+            inputProps={{ min: 0 }}
             required
           />
         </Grid>
@@ -167,7 +139,7 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
             fullWidth
             id="publisher"
             label="Publisher"
-            value={state?.publisher}
+            value={state.publisher}
             onChange={inputChangeHandler}
             name="publisher"
             required
@@ -177,7 +149,9 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
         <Grid item xs>
           <FileInput label="Image" onChange={fileInputChangeHandler} name="image" />
         </Grid>
-
+        <Button type="button" onClick={() => console.log(state)}>
+          State
+        </Button>
         <Grid item xs>
           <FormCreatingButton creating={creating} />
         </Grid>

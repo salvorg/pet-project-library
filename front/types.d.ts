@@ -57,22 +57,13 @@ export interface AuthorMutation {
 }
 
 export interface Book {
-  authors: number[] | null;
-  genres: number[] | null;
+  authors: string[];
+  genres: string[];
   title: string;
   description: string;
   availableCopies: number;
   publisher: string;
   image: string | null;
-}
-
-export interface BookMutation {
-  authors: number[];
-  genres: number[];
-  title: string;
-  description: string;
-  availableCopies: number;
-  publisher: string;
 }
 
 export interface BookApi {
@@ -88,5 +79,11 @@ export interface BookApi {
 
 export interface GenresApi {
   id: number;
-  name: string;
+  label: string;
+}
+
+export interface FoundUser {
+  id: number;
+  firstName: string;
+  lastName: string;
 }
