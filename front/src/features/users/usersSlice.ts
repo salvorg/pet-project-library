@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginError, User, ValidationError } from '../../../types';
-import { editUserProfile, googleLogin, login, register } from './usersThunks';
+import { FoundUser, LoginError, User, ValidationError } from '../../../types';
+import { editUserProfile, googleLogin, login, register, searchUsers } from './usersThunks';
 import { HYDRATE } from 'next-redux-wrapper';
-import { AppStore } from '@/app/store';
+import { AppState, AppStore } from '@/app/store';
 
 interface UserState {
   user: User | null;
+  found: FoundUser[];
+  searching: boolean;
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
@@ -15,6 +17,8 @@ interface UserState {
 
 const initialState: UserState = {
   user: null,
+  found: [],
+  searching: false,
   registerLoading: false,
   registerError: null,
   loginLoading: false,
@@ -52,44 +56,52 @@ export const usersSlice = createSlice({
       state.registerError = error || null;
     });
 
-    builder
-      .addCase(login.pending, (state) => {
-        state.loginLoading = true;
-        state.registerError = null;
-      })
-      .addCase(login.fulfilled, (state, { payload: user }) => {
-        state.loginLoading = false;
-        state.user = user;
-      })
-      .addCase(login.rejected, (state, { payload: error }) => {
-        state.loginLoading = false;
-        state.loginError = error || null;
-      });
+    builder.addCase(login.pending, (state) => {
+      state.loginLoading = true;
+      state.registerError = null;
+    });
+    builder.addCase(login.fulfilled, (state, { payload: user }) => {
+      state.loginLoading = false;
+      state.user = user;
+    });
+    builder.addCase(login.rejected, (state, { payload: error }) => {
+      state.loginLoading = false;
+      state.loginError = error || null;
+    });
 
-    builder
-      .addCase(googleLogin.pending, (state) => {
-        state.loginLoading = true;
-      })
-      .addCase(googleLogin.fulfilled, (state, { payload: user }) => {
-        state.loginLoading = false;
-        state.user = user;
-      })
-      .addCase(googleLogin.rejected, (state, { payload: error }) => {
-        state.loginLoading = false;
-        state.loginError = error || null;
-      });
+    builder.addCase(googleLogin.pending, (state) => {
+      state.loginLoading = true;
+    });
+    builder.addCase(googleLogin.fulfilled, (state, { payload: user }) => {
+      state.loginLoading = false;
+      state.user = user;
+    });
+    builder.addCase(googleLogin.rejected, (state, { payload: error }) => {
+      state.loginLoading = false;
+      state.loginError = error || null;
+    });
 
-    builder
-      .addCase(editUserProfile.pending, (state) => {
-        state.editLoading = true;
-      })
-      .addCase(editUserProfile.fulfilled, (state, { payload: user }) => {
-        state.editLoading = false;
-        state.user = user;
-      })
-      .addCase(editUserProfile.rejected, (state) => {
-        state.editLoading = false;
-      });
+    builder.addCase(editUserProfile.pending, (state) => {
+      state.editLoading = true;
+    });
+    builder.addCase(editUserProfile.fulfilled, (state, { payload: user }) => {
+      state.editLoading = false;
+      state.user = user;
+    });
+    builder.addCase(editUserProfile.rejected, (state) => {
+      state.editLoading = false;
+    });
+
+    builder.addCase(searchUsers.pending, (state) => {
+      state.searching = true;
+    });
+    builder.addCase(searchUsers.fulfilled, (state, { payload: users }) => {
+      state.searching = false;
+      state.found = users;
+    });
+    builder.addCase(searchUsers.rejected, (state) => {
+      state.searching = false;
+    });
   },
 });
 
@@ -98,6 +110,8 @@ export const usersReducer = usersSlice.reducer;
 export const { unsetUser } = usersSlice.actions;
 
 export const selectUser = (state: AppStore) => state.users.user;
+export const selectFoundUsers = (state: AppState) => state.users.found;
+
 export const selectRegisterLoading = (state: AppStore) => state.users.registerLoading;
 export const selectRegisterError = (state: AppStore) => state.users.registerError;
 export const selectLoginLoading = (state: AppStore) => state.users.loginLoading;

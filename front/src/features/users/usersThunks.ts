@@ -1,5 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginError, LoginMutation, ProfileMutation, RegisterMutation, User, ValidationError } from '../../../types';
+import {
+  FoundUser,
+  LoginError,
+  LoginMutation,
+  ProfileMutation,
+  RegisterMutation,
+  User,
+  ValidationError,
+} from '../../../types';
 import axiosApi from '../../../axiosApi';
 import { isAxiosError } from 'axios';
 import { unsetUser } from './usersSlice';
@@ -69,3 +77,8 @@ export const editUserProfile = createAsyncThunk<User, ProfileMutation, { rejectV
     }
   },
 );
+
+export const searchUsers = createAsyncThunk<FoundUser[], string>('users/search', async (searchTerm) => {
+  const response = await axiosApi.get(`/users?search=${searchTerm}`);
+  return response.data;
+});
