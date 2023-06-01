@@ -1,4 +1,14 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +24,11 @@ export class UsersController {
     private readonly usersRepo: Repository<User>,
     private readonly usersService: UsersService,
   ) {}
+
+  @Get()
+  async getAll(@Query('search') search: string) {
+    return this.usersService.getAll(search);
+  }
 
   @Post('register')
   @UseInterceptors(ClassSerializerInterceptor)

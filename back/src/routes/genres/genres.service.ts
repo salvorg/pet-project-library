@@ -14,7 +14,30 @@ export class GenresService {
     private readonly booksRepo: Repository<Book>,
   ) {}
 
-  async getAll(): Promise<Genre[]> {
+  async getAll(search): Promise<Genre[]> {
+    if (search) {
+      const genres = await this.genresRepo
+        .createQueryBuilder('genre')
+        .select('genre')
+        .where('genre.name ILIKE :query', { query: `%${search}%` })
+        .getMany();
+
+      if (!genres.length) {
+        throw new NotFoundException('No matches!');
+      }
+
+      const genreApi = [];
+
+      for (let i = 0; i < genres.length; i++) {
+        genreApi.push({
+          id: genres[i].id,
+          label: genres[i].name,
+        });
+      }
+
+      return genreApi;
+    }
+
     const genres = await this.genresRepo.find({ relations: ['books'] });
 
     if (!genres.length) {

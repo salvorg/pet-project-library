@@ -31,7 +31,7 @@ export class UsersFixtures {
 
     const admin = await this.usersRepo.create({
       email: 'admin@gmail.com',
-      firstName: 'Jane',
+      firstName: 'Joanne',
       lastName: 'Doe',
       password: 'password',
       role: 'admin',

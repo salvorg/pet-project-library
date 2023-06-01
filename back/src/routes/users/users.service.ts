@@ -12,6 +12,32 @@ export class UsersService {
     private readonly usersRepo: Repository<User>,
   ) {}
 
+  async getAll(search: string) {
+    if (search) {
+      const users = await this.usersRepo
+        .createQueryBuilder('user')
+        .select('user')
+        .where('user.firstName ILIKE :query', { query: `%${search}%` })
+        .getMany();
+
+      if (!users.length) {
+        throw new NotFoundException('No matches!');
+      }
+
+      const foundUsers = [];
+
+      for (let i = 0; i < users.length; i++) {
+        foundUsers.push({
+          id: users[i].id,
+          firstName: users[i].firstName,
+          lastName: users[i].lastName,
+        });
+      }
+
+      return foundUsers;
+    }
+  }
+
   async registerUser(email: string, firstName: string, lastName: string, password: string) {
     const existUser = await this.usersRepo.findOne({ where: { email } });
 
