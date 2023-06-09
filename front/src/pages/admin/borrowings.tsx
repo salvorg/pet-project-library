@@ -1,85 +1,143 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Button, Grid, TextField } from '@mui/material';
-import { FoundUser } from '../../../types';
+import { Button, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { BookApiWithLabel, BorrowingsApi, FoundItem } from '../../../types';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { selectFoundUsers } from '@/features/users/usersSlice';
 import { searchUsers } from '@/features/users/usersThunks';
-import Chip from '@mui/material/Chip';
+import AutoCompleter from '@/components/AutoCompleter/AutoCompleter';
+import { createBorrowing, returnBorrowing, searchBorrowings } from '@/features/borrowings/borrowingsThunks';
+import { selectBorrowingCreating, selectFoundBorrowings } from '@/features/borrowings/borrowingsSlice';
+import { searchBooks } from '@/features/books/booksThunks';
+import { selectFoundBooks } from '@/features/books/booksSlice';
+import BookCard from '@/components/Cards/BookCard';
+import { LoadingButton } from '@mui/lab';
+import dayjs from 'dayjs';
 
 const Borrowings = () => {
   const dispatch = useAppDispatch();
-  const foundUsers: FoundUser[] = useAppSelector(selectFoundUsers);
-  const [selectedUser, setSelectedUser] = useState<FoundUser | null>(null);
-  const [match, setMatch] = useState<string>('');
+  const foundUsers: FoundItem[] = useAppSelector(selectFoundUsers);
+  const foundBooks: BookApiWithLabel[] = useAppSelector(selectFoundBooks);
+  const foundBorrowings: BorrowingsApi[] = useAppSelector(selectFoundBorrowings);
+  const creatingBorrowing = useAppSelector(selectBorrowingCreating);
+  const [selectedUser, setSelectedUser] = useState<FoundItem | null>(null);
+  const [selectedBook, setSelectedBook] = useState<BookApiWithLabel | null>(null);
+  const [matchUser, setMatchUser] = useState<string>('');
+  const [matchBook, setMatchBook] = useState<string>('');
 
   useEffect(() => {
-    if (match.length) {
-      dispatch(searchUsers(match));
+    if (matchUser.length) {
+      dispatch(searchUsers(matchUser));
     }
-  }, [dispatch, match]);
+    if (matchBook.length) {
+      dispatch(searchBooks(matchBook));
+    }
+  }, [dispatch, matchUser, matchBook]);
 
-  const handleAutocompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (selectedUser && selectedUser.id) {
+      dispatch(searchBorrowings(selectedUser.id));
+    }
+  }, [dispatch, selectedUser, selectedBook]);
+
+  const handleAutocompleteUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setMatch(value);
+    setMatchUser(value);
   };
 
-  // const showBorrowings = () => {};
+  const handleAutocompleteBookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setMatchBook(value);
+  };
+
+  const handleBorrowing = async () => {
+    if (selectedUser && selectedBook) {
+      const newBorrowing = {
+        user: selectedUser.id,
+        book: selectedBook.id,
+      };
+
+      await dispatch(createBorrowing(newBorrowing));
+      setSelectedBook(null);
+    }
+  };
+
+  const handleRemove = async (id: number) => {
+    if (selectedUser) {
+      await dispatch(returnBorrowing(id));
+    }
+  };
+
+  const message =
+    selectedBook && selectedUser
+      ? `Do you want to add this book to ${selectedUser.label}'s borrowings?`
+      : selectedBook && !selectedUser
+      ? 'Choose user first'
+      : !selectedBook && selectedUser
+      ? 'Choose book first'
+      : 'Choose user and book first';
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
-        <Autocomplete
-          id="user-search"
-          freeSolo
+      <Grid item xs={6} sx={{ border: '1px solid #82877e', p: 2 }}>
+        <Typography sx={{ mb: 2 }}>Search borrowings:</Typography>
+        <AutoCompleter
+          label="Search by name"
           options={foundUsers}
-          renderTags={(value: readonly FoundUser[], getTagProps) =>
-            value.map((option: FoundUser, index: number) => (
-              <Chip
-                {...getTagProps({ index })}
-                variant="outlined"
-                key={option.id}
-                label={option.firstName + ' ' + option.lastName}
-              />
-            ))
-          }
-          value={selectedUser}
-          filterSelectedOptions
-          renderOption={(props, option) => {
-            return (
-              <li {...props} key={option.id}>
-                {option.firstName + ' ' + option.lastName}
-              </li>
-            );
-          }}
-          getOptionLabel={(option: FoundUser | string) => {
-            if (typeof option === 'string') {
-              return option;
-            }
-            return option.firstName + ' ' + option.lastName;
-          }}
-          onChange={(e, value: string | FoundUser | null) => {
-            setSelectedUser(value as FoundUser);
-          }}
-          renderInput={(params) => (
-            <TextField {...params} label="Search by name" onChange={handleAutocompleteChange} sx={{ width: '240px' }} />
-          )}
+          selectedState={selectedUser ? selectedUser : null}
+          setSelectedState={setSelectedUser}
+          handleAutocompleteChange={handleAutocompleteUserChange}
         />
-        Список покупок выбранного пользователя
-        <Button type="button" onClick={() => console.log(selectedUser)}>
-          User
-        </Button>
-        {/*{selectedUser && (*/}
-        {/*  <List>*/}
-        {/*    {selectedUser.purchases.map((purchase) => (*/}
-        {/*      <ListItem key={purchase.id}>*/}
-        {/*        <ListItemText primary={purchase.name} />*/}
-        {/*      </ListItem>*/}
-        {/*    ))}*/}
-        {/*  </List>*/}
-        {/*)}*/}
+        <Typography sx={{ mb: 2, mt: 2 }}>Create borrowing:</Typography>
+        <AutoCompleter
+          label="Search available book's copy"
+          options={foundBooks}
+          selectedState={selectedBook ? selectedBook : null}
+          setSelectedState={setSelectedBook}
+          handleAutocompleteChange={handleAutocompleteBookChange}
+        />
+        {selectedBook ? <BookCard book={selectedBook} /> : null}
+        <Typography sx={{ mt: 4, mb: 2 }}>{message}</Typography>
+        <LoadingButton
+          loading={creatingBorrowing}
+          type="button"
+          variant="contained"
+          sx={{ backgroundColor: '#133136' }}
+          onClick={handleBorrowing}
+        >
+          Create
+        </LoadingButton>
       </Grid>
-      <Grid item xs={6}>
-        {/* Здесь разместите форму создания покупки */}
+      <Grid item xs={6} sx={{ border: '1px solid #82877e', p: 2 }}>
+        {selectedUser && (
+          <List>
+            {foundBorrowings.map((borrowing) =>
+              borrowing.returnDate ? null : (
+                <ListItem key={borrowing.id} sx={{ border: '1px solid #82877e', mb: 1, display: 'flex' }}>
+                  <ListItemText
+                    sx={{ flexGrow: 1 }}
+                    primaryTypographyProps={{ variant: 'subtitle1', mr: 2 }}
+                    primary={borrowing.bookTitle}
+                    secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
+                    secondary={`Borrowed: ${dayjs(borrowing.borrowDate).format('DD-MM-YYYY')}`}
+                  />
+                  <ListItemText
+                    sx={{ flexGrow: 0 }}
+                    primaryTypographyProps={{ variant: 'body2', color: 'red' }}
+                    primary={`Expires:`}
+                    secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
+                    secondary={dayjs(borrowing.expiredDate).format('DD-MM-YYYY')}
+                  />
+                  <Button
+                    sx={{ backgroundColor: '#133136', color: 'white', ml: 3 }}
+                    onClick={() => handleRemove(borrowing.id)}
+                  >
+                    Make return
+                  </Button>
+                </ListItem>
+              ),
+            )}
+          </List>
+        )}
       </Grid>
     </Grid>
   );
