@@ -10,23 +10,13 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { Book } from '../books/book.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Author } from './author.entity';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/createAuthor.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('authors')
 export class AuthorsController {
-  constructor(
-    @InjectRepository(Author)
-    private readonly authorsRepo: Repository<Author>,
-    @InjectRepository(Book)
-    private readonly booksRepo: Repository<Book>,
-    private readonly authorsService: AuthorsService,
-  ) {}
+  constructor(private readonly authorsService: AuthorsService) {}
 
   @Get()
   async getAll(@Query('search') search: string) {
