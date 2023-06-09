@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FoundUser, LoginError, User, ValidationError } from '../../../types';
+import { FoundItem, LoginError, User, ValidationError } from '../../../types';
 import { editUserProfile, googleLogin, login, register, searchUsers } from './usersThunks';
 import { HYDRATE } from 'next-redux-wrapper';
 import { AppState, AppStore } from '@/app/store';
 
 interface UserState {
   user: User | null;
-  found: FoundUser[];
+  found: FoundItem[];
   searching: boolean;
   registerLoading: boolean;
   registerError: ValidationError | null;

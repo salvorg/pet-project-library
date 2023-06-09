@@ -51,15 +51,21 @@ export class AuthorApi extends Author {
   id: number;
 }
 
-export interface AuthorMutation {
-  id: number;
-  label: string;
-}
-
 export interface Book {
   authors: string[];
   genres: string[];
   title: string;
+  description: string;
+  availableCopies: number;
+  publisher: string;
+  image: string | null;
+}
+
+export interface BookApiWithLabel {
+  id: number;
+  authors: string[] | null;
+  genres: string[] | null;
+  label: string;
   description: string;
   availableCopies: number;
   publisher: string;
@@ -82,8 +88,20 @@ export interface GenresApi {
   label: string;
 }
 
-export interface FoundUser {
+export interface BorrowingsApi {
   id: number;
-  firstName: string;
-  lastName: string;
+  userId: number;
+  bookTitle: string;
+  borrowDate: Date;
+  expiredDate: Date;
+}
+
+export interface NewBorrowing {
+  user: number;
+  book: number;
+}
+
+export interface FoundItem {
+  id: number;
+  label: string;
 }

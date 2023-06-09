@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Exclude } from 'class-transformer';
@@ -37,6 +37,7 @@ export class User {
   role: string;
 
   @OneToMany(() => BookBorrowing, (bookBorrowing) => bookBorrowing.user, { nullable: true })
+  @JoinColumn({ name: 'bookBorrowings' })
   bookBorrowings: BookBorrowing[] | null;
 
   @Column({ nullable: true })

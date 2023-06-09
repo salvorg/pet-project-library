@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  FoundUser,
+  FoundItem,
   LoginError,
   LoginMutation,
   ProfileMutation,
@@ -78,7 +78,7 @@ export const editUserProfile = createAsyncThunk<User, ProfileMutation, { rejectV
   },
 );
 
-export const searchUsers = createAsyncThunk<FoundUser[], string>('users/search', async (searchTerm) => {
+export const searchUsers = createAsyncThunk<FoundItem[], string>('users/search', async (searchTerm) => {
   const response = await axiosApi.get(`/users?search=${searchTerm}`);
   return response.data;
 });

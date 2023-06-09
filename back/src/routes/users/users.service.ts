@@ -29,8 +29,7 @@ export class UsersService {
       for (let i = 0; i < users.length; i++) {
         foundUsers.push({
           id: users[i].id,
-          firstName: users[i].firstName,
-          lastName: users[i].lastName,
+          label: users[i].firstName + ' ' + users[i].lastName,
         });
       }
 
