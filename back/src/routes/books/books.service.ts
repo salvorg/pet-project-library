@@ -17,8 +17,22 @@ export class BooksService {
     private readonly genresRepo: Repository<Genre>,
   ) {}
 
-  async getAll(): Promise<Book[]> {
-    const books = await this.booksRepo.find({ relations: ['authors', 'genres'] });
+  async getAll(search: string): Promise<Book[]> {
+    const query = await this.booksRepo
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.authors', 'author')
+      .leftJoinAndSelect('book.genres', 'genre')
+      .select(['book', 'author.name', 'genre.name']);
+
+    if (search) {
+      query.where('book.title ILIKE :query', { query: `%${search}%` });
+    }
+
+    const books = await query.getMany();
+
+    if (search && !books.length) {
+      throw new NotFoundException('No matches!');
+    }
 
     if (!books.length) {
       throw new NotFoundException('No books found!');
@@ -35,11 +49,12 @@ export class BooksService {
       for (let k = 0; k < books[i].genres.length; k++) {
         genres.push(books[i].genres[k].name);
       }
+
       booksApi.push({
         id: books[i].id,
         authors,
         genres,
-        title: books[i].title,
+        label: books[i].title,
         description: books[i].description,
         image: books[i].image,
         availableCopies: books[i].availableCopies,
@@ -126,7 +141,7 @@ export class BooksService {
     }
   }
 
-  private async getBookById(id: number): Promise<Book> {
+  async getBookById(id: number): Promise<Book> {
     const book = await this.booksRepo.findOne({ where: { id }, relations: ['authors', 'genres'] });
 
     if (!book) {
