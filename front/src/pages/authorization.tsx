@@ -3,7 +3,7 @@ import { LoginMutation } from '../../types';
 import { Alert, Avatar, Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { selectLoginError } from '@/features/users/usersSlice';
+import { selectLoginError, selectUser } from '@/features/users/usersSlice';
 import { googleLogin, login } from '@/features/users/usersThunks';
 import { useGoogleLogin } from '@react-oauth/google';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -13,12 +13,16 @@ import Link from 'next/link';
 const Authorization = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectLoginError);
+  const user = useAppSelector(selectUser);
   const router = useRouter();
-
   const [state, setState] = useState<LoginMutation>({
     email: '',
     password: '',
   });
+
+  if (user) {
+    router.push('/');
+  }
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Box, Container, Grid, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { selectRegisterError, selectRegisterLoading } from '@/features/users/usersSlice';
+import { selectRegisterError, selectRegisterLoading, selectUser } from '@/features/users/usersSlice';
 import { googleLogin, register } from '@/features/users/usersThunks';
 import { LoadingButton } from '@mui/lab';
 import { useRouter } from 'next/router';
@@ -15,6 +15,7 @@ const Register = () => {
   const dispatch = useAppDispatch();
   const error = useAppSelector(selectRegisterError);
   const loading = useAppSelector(selectRegisterLoading);
+  const user = useAppSelector(selectUser);
   const router = useRouter();
   const [btnLoading, setBtnLoading] = useState(false);
   const [state, setState] = useState<RegisterMutation>({
@@ -24,6 +25,10 @@ const Register = () => {
     password: '',
   });
 
+  if (user) {
+    router.push('/');
+  }
+
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setState((prevState) => ({ ...prevState, [name]: value }));
@@ -31,12 +36,9 @@ const Register = () => {
 
   const submitFormHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-    // try {
+
     await dispatch(register(state)).unwrap();
     await router.push('/');
-    // } catch (e) {
-    //   throw new Error();
-    // }
   };
 
   const getFieldError = (fieldName: string) => {
