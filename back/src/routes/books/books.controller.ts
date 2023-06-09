@@ -18,8 +18,8 @@ export class BooksController {
   ) {}
 
   @Get()
-  async getAll() {
-    return this.booksService.getAll();
+  async getAll(@Param('search') search: string) {
+    return this.booksService.getAll(search);
   }
 
   @Get('/:id')
