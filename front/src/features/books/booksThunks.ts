@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../../../axiosApi';
-import { BookApi, Book, ValidationError } from '../../../types';
+import { Book, BookApi, BookApiWithLabel, ValidationError } from '../../../types';
 import { isAxiosError } from 'axios';
 
 export const fetchAllBooks = createAsyncThunk<BookApi[]>('books/fetchAll', async () => {
@@ -42,3 +42,8 @@ export const createBook = createAsyncThunk<void, Book, { rejectValue: Validation
     }
   },
 );
+
+export const searchBooks = createAsyncThunk<BookApiWithLabel[], string>('books/search', async (searchTerm) => {
+  const response = await axiosApi.get(`/books?search=${searchTerm}`);
+  return response.data;
+});

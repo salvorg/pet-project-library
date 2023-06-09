@@ -1,11 +1,11 @@
 import React from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 import Chip from '@mui/material/Chip';
-import { AuthorMutation, GenresApi } from '../../../types';
+import { FoundItem } from '../../../types';
 
 interface Props {
   label: string;
-  options: AuthorMutation[] | GenresApi[];
+  options: FoundItem[];
   selectedState: string[];
   setSelectedState: (value: string[]) => void;
   handleAutocompleteChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppState, AppStore } from '@/app/store';
-import { fetchAllBooks, fetchOneBook } from '@/features/books/booksThunks';
+import { fetchAllBooks, fetchOneBook, searchBooks } from '@/features/books/booksThunks';
 import { HYDRATE } from 'next-redux-wrapper';
-import { BookApi } from '../../../types';
+import { BookApi, BookApiWithLabel } from '../../../types';
 
 interface BooksState {
   items: BookApi[];
+  found: BookApiWithLabel[];
   item: BookApi | null;
   fetchLoading: boolean;
   fetchingOne: boolean;
@@ -13,6 +14,7 @@ interface BooksState {
 
 const initialState: BooksState = {
   items: [],
+  found: [],
   item: null,
   fetchLoading: false,
   fetchingOne: false,
@@ -53,10 +55,22 @@ export const booksSlice = createSlice({
     builder.addCase(fetchOneBook.rejected, (state) => {
       state.fetchingOne = false;
     });
+
+    builder.addCase(searchBooks.pending, (state) => {
+      state.fetchingOne = true;
+    });
+    builder.addCase(searchBooks.fulfilled, (state, { payload: book }) => {
+      state.fetchingOne = false;
+      state.found = book;
+    });
+    builder.addCase(searchBooks.rejected, (state) => {
+      state.fetchingOne = false;
+    });
   },
 });
 
 export const booksReducer = booksSlice.reducer;
 
 export const selectBooks = (state: AppStore) => state.books.items;
+export const selectFoundBooks = (state: AppStore) => state.books.found;
 export const selectOneBook = (state: AppStore) => state.books.item;

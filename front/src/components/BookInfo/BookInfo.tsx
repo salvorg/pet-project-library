@@ -30,11 +30,6 @@ const BookInfo: React.FC<Props> = ({ id, authors, description, availableCopies, 
       </Grid>
       <Grid item>
         <Typography>
-          <strong>Description:</strong> {description}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Typography>
           <strong>Publisher:</strong> {publisher}
         </Typography>
       </Grid>
@@ -64,6 +59,11 @@ const BookInfo: React.FC<Props> = ({ id, authors, description, availableCopies, 
             <strong>Genres:</strong> {genres.join(', ')}
           </Typography>
         )}
+      </Grid>
+      <Grid item>
+        <Typography sx={{ maxWidth: '600px' }}>
+          <strong>Description:</strong> {description}
+        </Typography>
       </Grid>
     </Grid>
   );

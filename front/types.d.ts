@@ -94,6 +94,7 @@ export interface BorrowingsApi {
   bookTitle: string;
   borrowDate: Date;
   expiredDate: Date;
+  returnDate: Date | null;
 }
 
 export interface NewBorrowing {

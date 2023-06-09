@@ -1,11 +1,11 @@
-import { GenresApi, ValidationError } from '../../../types';
+import { FoundItem, GenresApi, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from '@/app/store';
 import { createGenre, searchGenres } from '@/features/genres/genresThunks';
 
 interface GenresSlice {
   genres: GenresApi[];
-  found: GenresApi[];
+  found: FoundItem[];
   fetching: boolean;
   searching: boolean;
   fetchingOne: boolean;

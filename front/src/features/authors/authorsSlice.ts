@@ -1,10 +1,10 @@
-import { AuthorApi, AuthorMutation, ValidationError } from '../../../types';
+import { AuthorMutation, FoundItem, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { createAuthor, searchAuthors } from '@/features/authors/authorsThunks';
 import { AppState } from '@/app/store';
 
 interface AuthorsSlice {
-  authors: AuthorApi[];
+  authors: FoundItem[];
   found: AuthorMutation[];
   fetching: boolean;
   searching: boolean;
@@ -57,7 +57,7 @@ const authorsSlice = createSlice({
 
 export const authorsReducer = authorsSlice.reducer;
 
-export const selectAuthors = (state: AppState) => state.authors.authors.authors;
+export const selectAuthors = (state: AppState) => state.authors.authors;
 export const selectFoundAuthors = (state: AppState) => state.authors.found;
 
 export const selectAuthorCreating = (state: AppState) => state.authors.creating;

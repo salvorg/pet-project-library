@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Author, AuthorMutation } from '../../../types';
+import { Author, FoundItem } from '../../../types';
 import axiosApi from '../../../axiosApi';
 
 export const createAuthor = createAsyncThunk<void, Author>('authors/create', async (author) => {
@@ -17,7 +17,7 @@ export const createAuthor = createAsyncThunk<void, Author>('authors/create', asy
   await axiosApi.post('/authors', formData);
 });
 
-export const searchAuthors = createAsyncThunk<AuthorMutation[], string>('authors/search', async (searchTerm) => {
+export const searchAuthors = createAsyncThunk<FoundItem[], string>('authors/search', async (searchTerm) => {
   const response = await axiosApi.get(`/authors?search=${searchTerm}`);
   return response.data;
 });

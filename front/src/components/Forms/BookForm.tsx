@@ -4,9 +4,9 @@ import FileInput from '@/components/UI/FileInput/FileInput';
 import FormCreatingButton from '@/components/UI/Buttons/FormCreatingButton';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { selectAuthorCreating, selectFoundAuthors } from '@/features/authors/authorsSlice';
-import { AuthorMutation, Book, GenresApi } from '../../../types';
+import { Book, FoundItem } from '../../../types';
 import { searchAuthors } from '@/features/authors/authorsThunks';
-import MultiCompliter from '@/components/MultiCompliter/MultiCompliter';
+import MultiCompliter from '@/components/AutoCompleter/MultiCompliter';
 import { searchGenres } from '@/features/genres/genresThunks';
 import { selectFoundGenres } from '@/features/genres/genresSlice';
 
@@ -16,8 +16,8 @@ interface Props {
 
 const BookForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
-  const foundAuthors: AuthorMutation[] = useAppSelector(selectFoundAuthors);
-  const foundGenres: GenresApi[] = useAppSelector(selectFoundGenres);
+  const foundAuthors: FoundItem[] = useAppSelector(selectFoundAuthors);
+  const foundGenres: FoundItem[] = useAppSelector(selectFoundGenres);
   const creating = useAppSelector(selectAuthorCreating);
 
   const [match, setMatch] = useState<string>('');

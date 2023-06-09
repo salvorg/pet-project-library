@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookMutation } from '../../../types';
+import { Book } from '../../../types';
 import { useAppDispatch } from '@/app/hooks';
 import { useRouter } from 'next/router';
 import { Box, Container, Grid, Typography } from '@mui/material';
@@ -10,7 +10,7 @@ const NewBook = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const onFormSubmit = async (book: BookMutation) => {
+  const onFormSubmit = async (book: Book) => {
     try {
       if (book) {
         await dispatch(createBook(book));
