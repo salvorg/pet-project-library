@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import FileInput from '@/components/UI/FileInput/FileInput';
 import FormCreatingButton from '@/components/UI/Buttons/FormCreatingButton';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -23,6 +23,7 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
   const [match, setMatch] = useState<string>('');
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [state, setState] = useState<Book>({
     authors: [],
     genres: [],
@@ -68,11 +69,31 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
     setMatch(value);
   };
 
+  // const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, files } = e.target;
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     [name]: files && files[0] ? files[0] : null,
+  //   }));
+  // };
+
   const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
+    const file = files && files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+
     setState((prevState) => ({
       ...prevState,
-      [name]: files && files[0] ? files[0] : null,
+      [name]: file ? file : null,
     }));
   };
 
@@ -149,9 +170,9 @@ const BookForm: React.FC<Props> = ({ onSubmit }) => {
         <Grid item xs>
           <FileInput label="Image" onChange={fileInputChangeHandler} name="image" />
         </Grid>
-        <Button type="button" onClick={() => console.log(state)}>
-          State
-        </Button>
+        <Grid item xs>
+          {previewImage && <img src={previewImage} alt="Preview" style={{ maxWidth: '100%' }} />}
+        </Grid>
         <Grid item xs>
           <FormCreatingButton creating={creating} />
         </Grid>
