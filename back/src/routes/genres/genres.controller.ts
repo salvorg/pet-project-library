@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from '../books/book.entity';
 import { Genre } from './genre.entity';
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/createGenre.dto';
+import { TokenAuthGuard } from '../../auth/token-auth.guard';
+import { RoleGuard } from '../../auth/role.guard';
 
 @Controller('genres')
 export class GenresController {
@@ -27,16 +29,19 @@ export class GenresController {
   }
 
   @Post()
+  @UseGuards(TokenAuthGuard, RoleGuard)
   async createGenre(@Body() body: CreateGenreDto) {
     return this.genresService.createGenre(body);
   }
 
   @Patch(':id')
+  @UseGuards(TokenAuthGuard, RoleGuard)
   async updateGenre(@Param('id') id: number, @Body() body: CreateGenreDto) {
     return this.genresService.updateGenre(id, body);
   }
 
   @Delete(':id')
+  @UseGuards(TokenAuthGuard, RoleGuard)
   async removeGenre(@Param('id') id: number) {
     return this.genresService.removeGenre(id);
   }

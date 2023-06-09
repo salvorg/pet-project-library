@@ -88,8 +88,6 @@ export class BooksService {
     const parsedAuthors = JSON.parse(body.authors);
     const parsedGenres = JSON.parse(body.genres);
 
-    console.log(parsedAuthors);
-
     const [authors, genres] = await Promise.all([
       this.findAuthorsById(parsedAuthors),
       this.findGenresById(parsedGenres),
