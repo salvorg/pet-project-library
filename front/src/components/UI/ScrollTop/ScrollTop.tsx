@@ -20,7 +20,7 @@ const ScrollTop = ({ children }) => {
 
   return (
     <Fade in={trigger} id="back-to-top-anchor">
-      <Box onClick={handleClick} role="presentation" sx={{ position: 'fixed', bottom: 16, right: 16 }}>
+      <Box onClick={handleClick} role="presentation" sx={{ position: 'fixed', bottom: 76, right: 16 }}>
         {children}
       </Box>
     </Fade>
