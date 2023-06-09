@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn, BeforeInsert } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Book } from '../books/book.entity';
 
@@ -15,9 +15,17 @@ export class BookBorrowing {
   @JoinColumn({ name: 'book' })
   book: Book;
 
-  @CreateDateColumn()
+  @Column()
   borrowDate: Date;
+
+  @Column()
+  expiredDate: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   returnDate: Date;
+
+  @BeforeInsert()
+  async calculateExpiredDate() {
+    this.expiredDate = new Date(this.borrowDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+  }
 }

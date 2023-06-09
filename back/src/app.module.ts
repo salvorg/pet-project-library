@@ -22,6 +22,8 @@ import { UsersFixtures } from './fixtures/users.fixtures';
 import { AuthorsFixtures } from './fixtures/authors.fixtures';
 import { GenresFixtures } from './fixtures/genres.fixtures';
 import { BooksFixtures } from './fixtures/books.fixtures';
+import { BookBorrowingsController } from './routes/bookBorrowings/bookBorrowings.controller';
+import { BookBorrowingsService } from './routes/bookBorrowings/bookBorrowings.service';
 
 @Module({
   imports: [
@@ -29,7 +31,14 @@ import { BooksFixtures } from './fixtures/books.fixtures';
     DatabaseModule,
     TypeOrmModule.forFeature([User, Author, Book, Genre, BookBorrowing]),
   ],
-  controllers: [UsersController, AuthorsController, BooksController, GenresController, GoogleBooksApiController],
+  controllers: [
+    UsersController,
+    AuthorsController,
+    BooksController,
+    GenresController,
+    GoogleBooksApiController,
+    BookBorrowingsController,
+  ],
   providers: [
     UsersService,
     AuthorsService,
@@ -41,6 +50,7 @@ import { BooksFixtures } from './fixtures/books.fixtures';
     BooksFixtures,
     FixturesService,
     SeedCommand,
+    BookBorrowingsService,
   ],
 })
 export class AppModule {}

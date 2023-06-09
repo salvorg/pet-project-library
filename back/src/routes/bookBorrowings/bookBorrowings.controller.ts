@@ -1,32 +1,23 @@
-import { Controller, Get, Patch, Post } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
-import { Repository } from 'typeorm';
-import { Book } from '../books/book.entity';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { BookBorrowingsService } from './bookBorrowings.service';
+import { CreateBorrowingDto } from './dto/createBorrowing.dto';
 
-@Controller('borrowing')
+@Controller('borrowings')
 export class BookBorrowingsController {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepo: Repository<User>,
-    @InjectRepository(Book)
-    private readonly booksRepo: Repository<Book>,
-    private readonly bookBorrowingsService: BookBorrowingsService,
-  ) {}
+  constructor(private readonly bookBorrowingsService: BookBorrowingsService) {}
 
   @Get()
-  async getAll() {
-    return this.bookBorrowingsService.getAll();
+  async getAll(@Query('search') search: string) {
+    return this.bookBorrowingsService.getAll(search);
   }
 
   @Post()
-  async createBorrowing(userId: number, bookId: number) {
-    return this.bookBorrowingsService.createBorrowing(userId, bookId);
+  async createBorrowing(@Body() body: CreateBorrowingDto) {
+    return this.bookBorrowingsService.createBorrowing(body.user, body.book);
   }
 
   @Patch()
-  async updateBorrowing() {
-    return this.bookBorrowingsService.updateBorrowing();
+  async updateBorrowing(@Body() body: { id: number }) {
+    return this.bookBorrowingsService.updateBorrowing(body.id);
   }
 }

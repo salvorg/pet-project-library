@@ -16,8 +16,37 @@ export class BookBorrowingsService {
     private readonly borrowingsRepo: Repository<BookBorrowing>,
   ) {}
 
-  async getAll() {
-    return await this.borrowingsRepo.find();
+  async getAll(userId: string) {
+    let query = this.borrowingsRepo
+      .createQueryBuilder('book_borrowing')
+      .leftJoinAndSelect('book_borrowing.book', 'book')
+      .select(['book_borrowing', 'book.title'])
+      .orderBy('book_borrowing.expiredDate', 'ASC');
+
+    if (userId) {
+      query = query.where('book_borrowing.user.id = :userId', { userId });
+    }
+
+    const bookBorrowings = await query.getMany();
+
+    if (!bookBorrowings.length) {
+      throw new NotFoundException('No matches!');
+    }
+
+    const borrowingsApi = [];
+
+    for (let i = 0; i < bookBorrowings.length; i++) {
+      borrowingsApi.push({
+        id: bookBorrowings[i].id,
+        userId,
+        bookTitle: bookBorrowings[i].book.title,
+        borrowDate: bookBorrowings[i].borrowDate,
+        expiredDate: bookBorrowings[i].expiredDate,
+        returnDate: bookBorrowings[i].returnDate,
+      });
+    }
+
+    return borrowingsApi;
   }
 
   async createBorrowing(userid: number, bookId: number) {
@@ -32,15 +61,24 @@ export class BookBorrowingsService {
     const newBorrowing = await this.borrowingsRepo.create({
       user: await this.getUserById(userid),
       book,
+      borrowDate: new Date(),
     });
 
     await this.booksRepo.save(book);
     await this.borrowingsRepo.save(newBorrowing);
-    return { message: 'The process has been successfully completed!' };
+    return { message: 'Creating process has been successfully completed!' };
   }
 
-  async updateBorrowing() {
-    return;
+  async updateBorrowing(id: number) {
+    const existBorrowing = await this.borrowingsRepo.findOne({ where: { id } });
+
+    if (!existBorrowing) {
+      throw new NotFoundException('Borrowing not found!');
+    }
+
+    existBorrowing.returnDate = new Date();
+    await this.borrowingsRepo.save(existBorrowing);
+    return { message: 'Returning has been successfully completed!' };
   }
 
   private async getBookById(id: number): Promise<Book> {
