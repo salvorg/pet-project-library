@@ -27,7 +27,7 @@ const initialState: AuthorsSlice = {
   validationError: null,
 };
 
-const authorsSlice = createSlice({
+export const authorsSlice = createSlice({
   name: 'authors',
   initialState,
   reducers: {},

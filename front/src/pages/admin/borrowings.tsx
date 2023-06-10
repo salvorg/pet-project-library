@@ -64,6 +64,7 @@ const Borrowings = () => {
   const handleRemove = async (id: number) => {
     if (selectedUser) {
       await dispatch(returnBorrowing(id));
+      await dispatch(searchBorrowings(selectedUser.id));
     }
   };
 
@@ -110,31 +111,32 @@ const Borrowings = () => {
       <Grid item xs={6} sx={{ border: '1px solid #82877e', p: 2 }}>
         {selectedUser && (
           <List>
-            {foundBorrowings.map((borrowing) =>
-              borrowing.returnDate ? null : (
-                <ListItem key={borrowing.id} sx={{ border: '1px solid #82877e', mb: 1, display: 'flex' }}>
-                  <ListItemText
-                    sx={{ flexGrow: 1 }}
-                    primaryTypographyProps={{ variant: 'subtitle1', mr: 2 }}
-                    primary={borrowing.bookTitle}
-                    secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
-                    secondary={`Borrowed: ${dayjs(borrowing.borrowDate).format('DD-MM-YYYY')}`}
-                  />
-                  <ListItemText
-                    sx={{ flexGrow: 0 }}
-                    primaryTypographyProps={{ variant: 'body2', color: 'red' }}
-                    primary={`Expires:`}
-                    secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
-                    secondary={dayjs(borrowing.expiredDate).format('DD-MM-YYYY')}
-                  />
-                  <Button
-                    sx={{ backgroundColor: '#133136', color: 'white', ml: 3 }}
-                    onClick={() => handleRemove(borrowing.id)}
-                  >
-                    Make return
-                  </Button>
-                </ListItem>
-              ),
+            {foundBorrowings.map(
+              (borrowing) =>
+                borrowing.returnDate === null && (
+                  <ListItem key={borrowing.id} sx={{ border: '1px solid #82877e', mb: 1, display: 'flex' }}>
+                    <ListItemText
+                      sx={{ flexGrow: 1 }}
+                      primaryTypographyProps={{ variant: 'subtitle1', mr: 2 }}
+                      primary={borrowing.bookTitle}
+                      secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
+                      secondary={`Borrowed: ${dayjs(borrowing.borrowDate).format('DD-MM-YYYY')}`}
+                    />
+                    <ListItemText
+                      sx={{ flexGrow: 0 }}
+                      primaryTypographyProps={{ variant: 'body2', color: 'red' }}
+                      primary={`Expires:`}
+                      secondaryTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
+                      secondary={dayjs(borrowing.expiredDate).format('DD-MM-YYYY')}
+                    />
+                    <Button
+                      sx={{ backgroundColor: '#133136', color: 'white', ml: 3 }}
+                      onClick={() => handleRemove(borrowing.id)}
+                    >
+                      Make return
+                    </Button>
+                  </ListItem>
+                ),
             )}
           </List>
         )}

@@ -84,26 +84,30 @@ export class BooksService {
   }
 
   async createBook(file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
-    await this.checkForExistingBook(body.title, body.description, body.publisher);
-    const parsedAuthors = JSON.parse(body.authors);
-    const parsedGenres = JSON.parse(body.genres);
-
-    const [authors, genres] = await Promise.all([
-      this.findAuthorsById(parsedAuthors),
-      this.findGenresById(parsedGenres),
-    ]);
-
-    const book = this.booksRepo.create({
-      authors,
-      genres,
-      title: body.title,
-      description: body.description,
-      availableCopies: parseFloat(body.availableCopies),
-      publisher: body.publisher,
-      image: file ? '/uploads/books/images/' + file.filename : null,
+    const book = this.booksRepo.findOne({
+      where: { title: body.title, description: body.description, publisher: body.publisher },
     });
 
-    return await this.booksRepo.save(book);
+    if (book) {
+      const parsedAuthors = JSON.parse(body.authors);
+      const parsedGenres = JSON.parse(body.genres);
+
+      const [authors, genres] = await Promise.all([
+        this.findAuthorsById(parsedAuthors),
+        this.findGenresById(parsedGenres),
+      ]);
+
+      book.authors = authors;
+      book.genres = genres;
+      book.title = body.title;
+      book.description = body.description;
+      book.availableCopies = parseFloat(body.availableCopies);
+      book.publisher = body.publisher;
+      book.image = file ? '/uploads/books/images/' + file.filename : null;
+
+      await this.booksRepo.save(book);
+      return { message: 'Created successfully' };
+    }
   }
 
   async updateBook(id: number, file: Express.Multer.File, body: CreateBookDto): Promise<Book> {
@@ -120,7 +124,8 @@ export class BooksService {
     book.publisher = body.publisher;
     book.image = file ? '/uploads/books/images/' + file.filename : null;
 
-    return await this.booksRepo.save(book);
+    await this.booksRepo.save(book);
+    return { message: 'Updated successfully' };
   }
 
   async removeBook(id: number): Promise<{ message: string }> {

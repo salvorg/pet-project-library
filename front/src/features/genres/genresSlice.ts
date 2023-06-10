@@ -27,7 +27,7 @@ const initialState: GenresSlice = {
   validationError: null,
 };
 
-const genresSlice = createSlice({
+export const genresSlice = createSlice({
   name: 'genres',
   initialState,
   reducers: {},

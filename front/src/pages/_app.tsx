@@ -19,18 +19,18 @@ export default function MyApp({ Component, pageProps, ...rest }: AppProps) {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID as string}>
       <Provider store={store}>
-        <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-          <CssBaseline />
-          <Layout>
-            <div id="back-to-top-anchor"></div>
-            <Component {...props.pageProps} />
-            <ScrollTop {...props.pageProps}>
-              <Fab size="small" aria-label="scroll back to top">
-                <KeyboardArrowUpIcon />
-              </Fab>
-            </ScrollTop>
-          </Layout>
-        </PersistGate>
+        {/*<PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>*/}
+        <CssBaseline />
+        <Layout>
+          <div id="back-to-top-anchor"></div>
+          <Component {...props.pageProps} />
+          <ScrollTop {...props.pageProps}>
+            <Fab size="small" aria-label="scroll back to top">
+              <KeyboardArrowUpIcon />
+            </Fab>
+          </ScrollTop>
+        </Layout>
+        {/*</PersistGate>*/}
       </Provider>
     </GoogleOAuthProvider>
   );

@@ -27,7 +27,7 @@ const initialState: BorrowingsSlice = {
   validationError: null,
 };
 
-const borrowingsSlice = createSlice({
+export const borrowingsSlice = createSlice({
   name: 'borrowings',
   initialState,
   reducers: {},

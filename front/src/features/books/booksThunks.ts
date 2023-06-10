@@ -14,7 +14,7 @@ export const fetchOneBook = createAsyncThunk<BookApi, string>('books/fetchOneBoo
   return response.data;
 });
 
-export const createBook = createAsyncThunk<void, Book, { rejectValue: ValidationError }>(
+export const createBook = createAsyncThunk<void, { message: string }, { rejectValue: ValidationError }>(
   'books/create',
   async (book, { rejectWithValue }) => {
     try {
@@ -34,6 +34,35 @@ export const createBook = createAsyncThunk<void, Book, { rejectValue: Validation
       });
 
       await axiosApi.post('/books', formData);
+    } catch (e) {
+      if (isAxiosError(e) && e.response && e.response.status === 400) {
+        return rejectWithValue(e.response.data as ValidationError);
+      }
+      throw e;
+    }
+  },
+);
+
+export const updateBook = createAsyncThunk<void, { message: string }, { rejectValue: ValidationError }>(
+  'books/update',
+  async (book, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      const keys = Object.keys(book) as (keyof Book)[];
+
+      keys.forEach((key) => {
+        const value = book[key];
+
+        if (value !== null) {
+          if (Array.isArray(value) || typeof value === 'number') {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
+        }
+      });
+
+      await axiosApi.patch('/books', formData);
     } catch (e) {
       if (isAxiosError(e) && e.response && e.response.status === 400) {
         return rejectWithValue(e.response.data as ValidationError);
