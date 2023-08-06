@@ -4,7 +4,7 @@ import { editUserProfile, googleLogin, login, register, searchUsers } from './us
 import { HYDRATE } from 'next-redux-wrapper';
 import { RootState, RootStore } from '@/app/store';
 
-interface UserState {
+export interface UserState {
   user: User | null;
   found: FoundItem[];
   searching: boolean;
