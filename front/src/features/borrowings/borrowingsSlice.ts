@@ -1,6 +1,6 @@
 import { BorrowingsApi, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { AppState } from '@/app/store';
+import { RootState } from '@/app/store';
 import { createBorrowing, returnBorrowing, searchBorrowings } from '@/features/borrowings/borrowingsThunks';
 
 interface BorrowingsSlice {
@@ -67,7 +67,7 @@ export const borrowingsSlice = createSlice({
 
 export const borrowingsReducer = borrowingsSlice.reducer;
 
-export const selectBorrowings = (state: AppState) => state.borrowings.borrowings;
-export const selectFoundBorrowings = (state: AppState) => state.borrowings.found;
+export const selectBorrowings = (state: RootState) => state.borrowings.borrowings;
+export const selectFoundBorrowings = (state: RootState) => state.borrowings.found;
 
-export const selectBorrowingCreating = (state: AppState) => state.borrowings.creating;
+export const selectBorrowingCreating = (state: RootState) => state.borrowings.creating;

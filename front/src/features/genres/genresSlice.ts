@@ -1,6 +1,6 @@
 import { FoundItem, GenresApi, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { AppState } from '@/app/store';
+import { RootState } from '@/app/store';
 import { createGenre, searchGenres } from '@/features/genres/genresThunks';
 
 interface GenresSlice {
@@ -57,7 +57,7 @@ export const genresSlice = createSlice({
 
 export const genresReducer = genresSlice.reducer;
 
-export const selectGenres = (state: AppState) => state.authors.genres.authors;
-export const selectFoundGenres = (state: AppState) => state.genres.found;
+export const selectGenres = (state: RootState) => state.authors.genres.authors;
+export const selectFoundGenres = (state: RootState) => state.genres.found;
 
-export const selectGenreCreating = (state: AppState) => state.genres.creating;
+export const selectGenreCreating = (state: RootState) => state.genres.creating;

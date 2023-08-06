@@ -11,7 +11,7 @@ import {
 import axiosApi from '../../../axiosApi';
 import { isAxiosError } from 'axios';
 import { unsetUser } from './usersSlice';
-import { AppState } from '@/app/store';
+import { RootState } from '@/app/store';
 
 export const register = createAsyncThunk<User, RegisterMutation, { rejectValue: ValidationError }>(
   'users/register',
@@ -58,7 +58,7 @@ export const login = createAsyncThunk<User, LoginMutation, { rejectValue: LoginE
   },
 );
 
-export const logout = createAsyncThunk<void, void, { state: AppState }>('users/logout', async (_, { dispatch }) => {
+export const logout = createAsyncThunk<void, void, { state: RootState }>('users/logout', async (_, { dispatch }) => {
   await axiosApi.delete('users/logout');
   dispatch(unsetUser());
 });

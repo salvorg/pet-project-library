@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FoundItem, LoginError, User, ValidationError } from '../../../types';
 import { editUserProfile, googleLogin, login, register, searchUsers } from './usersThunks';
 import { HYDRATE } from 'next-redux-wrapper';
-import { AppState, AppStore } from '@/app/store';
+import { RootState, RootStore } from '@/app/store';
 
 interface UserState {
   user: User | null;
@@ -36,7 +36,7 @@ export const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(HYDRATE, (state, action) => {
-      const { payload } = action as PayloadAction<AppStore>;
+      const { payload } = action as PayloadAction<RootStore>;
       return {
         ...state,
         ...payload.users,
@@ -109,11 +109,11 @@ export const usersReducer = usersSlice.reducer;
 
 export const { unsetUser } = usersSlice.actions;
 
-export const selectUser = (state: AppStore) => state.users.user;
-export const selectFoundUsers = (state: AppState) => state.users.found;
+export const selectUser = (state: RootStore) => state.users.user;
+export const selectFoundUsers = (state: RootState) => state.users.found;
 
-export const selectRegisterLoading = (state: AppStore) => state.users.registerLoading;
-export const selectRegisterError = (state: AppStore) => state.users.registerError;
-export const selectLoginLoading = (state: AppStore) => state.users.loginLoading;
-export const selectLoginError = (state: AppStore) => state.users.loginError;
-export const selectEditLoading = (state: AppStore) => state.users.editLoading;
+export const selectRegisterLoading = (state: RootStore) => state.users.registerLoading;
+export const selectRegisterError = (state: RootStore) => state.users.registerError;
+export const selectLoginLoading = (state: RootStore) => state.users.loginLoading;
+export const selectLoginError = (state: RootStore) => state.users.loginError;
+export const selectEditLoading = (state: RootStore) => state.users.editLoading;

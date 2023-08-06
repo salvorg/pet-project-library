@@ -1,7 +1,7 @@
 import { AuthorMutation, FoundItem, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { createAuthor, searchAuthors } from '@/features/authors/authorsThunks';
-import { AppState } from '@/app/store';
+import { RootState } from '@/app/store';
 
 interface AuthorsSlice {
   authors: FoundItem[];
@@ -57,7 +57,7 @@ export const authorsSlice = createSlice({
 
 export const authorsReducer = authorsSlice.reducer;
 
-export const selectAuthors = (state: AppState) => state.authors.authors;
-export const selectFoundAuthors = (state: AppState) => state.authors.found;
+export const selectAuthors = (state: RootState) => state.authors.authors;
+export const selectFoundAuthors = (state: RootState) => state.authors.found;
 
-export const selectAuthorCreating = (state: AppState) => state.authors.creating;
+export const selectAuthorCreating = (state: RootState) => state.authors.creating;
