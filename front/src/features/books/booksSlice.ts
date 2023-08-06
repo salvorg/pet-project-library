@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, RootStore } from '@/app/store';
+import { RootState } from '@/app/store';
 import { fetchAllBooks, fetchOneBook, searchBooks, updateBook } from '@/features/books/booksThunks';
 import { HYDRATE } from 'next-redux-wrapper';
 import { BookApi, BookApiWithLabel } from '../../../types';
@@ -85,7 +85,7 @@ export const booksSlice = createSlice({
 
 export const booksReducer = booksSlice.reducer;
 
-export const selectBooks = (state: RootStore) => state.books.items;
-export const selectFoundBooks = (state: RootStore) => state.books.found;
-export const selectOneBook = (state: RootStore) => state.books.item;
-export const selectBookUpdating = (state: RootStore) => state.books.updating;
+export const selectBooks = (state: RootState) => state.books.items;
+export const selectFoundBooks = (state: RootState) => state.books.found;
+export const selectOneBook = (state: RootState) => state.books.item;
+export const selectBookUpdating = (state: RootState) => state.books.updating;
