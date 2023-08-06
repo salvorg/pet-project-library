@@ -1,7 +1,7 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import { configureStore, combineReducers, Reducer } from '@reduxjs/toolkit';
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, persistReducer, persistStore } from 'redux-persist';
 import { createWrapper } from 'next-redux-wrapper';
-import { usersSlice } from '@/features/users/usersSlice';
+import { usersSlice, UserState } from '@/features/users/usersSlice';
 import storage from 'redux-persist/lib/storage';
 import { authorsSlice } from '@/features/authors/authorsSlice';
 import { booksSlice } from '@/features/books/booksSlice';
@@ -17,8 +17,12 @@ const persistConfig = {
 const makeStore = () => {
   const isServer = typeof window === 'undefined';
 
+  const usersReducer = isServer
+    ? usersSlice.reducer
+    : (persistReducer(persistConfig, usersSlice.reducer) as unknown as Reducer<UserState>);
+
   let rootReducer = combineReducers({
-    [usersSlice.name]: persistReducer(persistConfig, usersSlice.reducer),
+    [usersSlice.name]: usersReducer,
     [authorsSlice.name]: authorsSlice.reducer,
     [booksSlice.name]: booksSlice.reducer,
     [borrowingsSlice.name]: borrowingsSlice.reducer,
@@ -44,8 +48,8 @@ const makeStore = () => {
   return store;
 };
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type AppState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+export type RootStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<RootStore['getState']>;
+export type AppDispatch = RootStore['dispatch'];
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export const wrapper = createWrapper<RootStore>(makeStore);
