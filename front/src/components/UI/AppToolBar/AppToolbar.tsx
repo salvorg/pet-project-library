@@ -21,7 +21,7 @@ const AppToolbar = () => {
 
   const handleClickOutside = (event: React.MouseEvent<Document, MouseEvent>) => {
     if (
-      searchRef.current &&
+      searchRef.current instanceof Element &&
       !searchRef.current.contains(event.target) &&
       !searchButtonRef.current.contains(event.target)
     ) {
