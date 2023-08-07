@@ -1,7 +1,6 @@
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
-import { useAppSelector } from '../../../app/hooks';
-import { selectAdding } from '../../../features/trackHistory/trackHistorySlice';
+import { useAppSelector } from '@/app/hooks';
 
 interface Props {
   onClick: () => void;
