@@ -74,7 +74,7 @@ export const booksSlice = createSlice({
     builder.addCase(updateBook.pending, (state) => {
       state.updating = true;
     });
-    builder.addCase(updateBook.fulfilled, (state, { payload: book }) => {
+    builder.addCase(updateBook.fulfilled, (state) => {
       state.updating = false;
     });
     builder.addCase(updateBook.rejected, (state) => {

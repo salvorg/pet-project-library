@@ -14,7 +14,7 @@ export const fetchOneBook = createAsyncThunk<BookApi, string>('books/fetchOneBoo
   return response.data;
 });
 
-export const createBook = createAsyncThunk<void, { message: string }, { rejectValue: ValidationError }>(
+export const createBook = createAsyncThunk<{ message: string }, Book, { rejectValue: ValidationError }>(
   'books/create',
   async (book, { rejectWithValue }) => {
     try {
@@ -43,7 +43,7 @@ export const createBook = createAsyncThunk<void, { message: string }, { rejectVa
   },
 );
 
-export const updateBook = createAsyncThunk<void, { message: string }, { rejectValue: ValidationError }>(
+export const updateBook = createAsyncThunk<{ message: string }, Book, { rejectValue: ValidationError }>(
   'books/update',
   async (book, { rejectWithValue }) => {
     try {
