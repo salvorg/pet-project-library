@@ -31,7 +31,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
             </Typography>
           }
         />
-        <CardMedia component="img" width="50" height="200" image={URL + book.image} alt={book.title} />
+        <CardMedia component="img" width="50" height="200" image={URL + book.image} alt={book.label} />
         <CardContent sx={{ flexGrow: 2 }}>
           <Typography variant="body2" color="text.secondary">
             {book.authors
