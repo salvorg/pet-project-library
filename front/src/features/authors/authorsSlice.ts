@@ -1,11 +1,11 @@
-import { AuthorMutation, FoundItem, ValidationError } from '../../../types';
+import { FoundItem, ValidationError } from '../../../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { createAuthor, searchAuthors } from '@/features/authors/authorsThunks';
 import { RootState } from '@/app/store';
 
 interface AuthorsSlice {
   authors: FoundItem[];
-  found: AuthorMutation[];
+  found: FoundItem[];
   fetching: boolean;
   searching: boolean;
   fetchingOne: boolean;
