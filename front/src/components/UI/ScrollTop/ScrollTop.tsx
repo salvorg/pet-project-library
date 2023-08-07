@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, useScrollTrigger } from '@mui/material';
 import Fade from '@mui/material/Fade';
 
-const ScrollTop = ({ children }) => {
+const ScrollTop = ({ children }: { children: React.ReactNode }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
