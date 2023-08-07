@@ -5,11 +5,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { BookApiWithLabel } from '../../../types';
+import { BookApi } from '../../../types';
 import { useRouter } from 'next/router';
 
 interface Props {
-  book: BookApiWithLabel;
+  book: BookApi;
 }
 
 const BookCard: React.FC<Props> = ({ book }) => {
@@ -27,11 +27,11 @@ const BookCard: React.FC<Props> = ({ book }) => {
           }
           title={
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {book.label}
+              {book.title}
             </Typography>
           }
         />
-        <CardMedia component="img" width="50" height="200" image={URL + book.image} alt={book.label} />
+        <CardMedia component="img" width="50" height="200" image={URL + book.image} alt={book.title} />
         <CardContent sx={{ flexGrow: 2 }}>
           <Typography variant="body2" color="text.secondary">
             {book.authors
