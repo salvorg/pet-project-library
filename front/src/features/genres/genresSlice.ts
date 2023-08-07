@@ -57,7 +57,7 @@ export const genresSlice = createSlice({
 
 export const genresReducer = genresSlice.reducer;
 
-export const selectGenres = (state: RootState) => state.authors.genres.authors;
+export const selectGenres = (state: RootState) => state.authors.genres;
 export const selectFoundGenres = (state: RootState) => state.genres.found;
 
 export const selectGenreCreating = (state: RootState) => state.genres.creating;
