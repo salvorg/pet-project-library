@@ -11,7 +11,7 @@ export const createBorrowing = createAsyncThunk<void, NewBorrowing>('borrowings/
   try {
     await axiosApi.post('/borrowings', data);
   } catch (e) {
-    throw new Error({ message: 'something wrong on creating borrowing' });
+    throw new Error('something wrong on creating borrowing');
   }
 });
 
@@ -19,6 +19,6 @@ export const returnBorrowing = createAsyncThunk<void, number>('borrowings/update
   try {
     await axiosApi.patch('/borrowings', id);
   } catch (e) {
-    throw new Error({ message: 'something wrong on patching borrowing' });
+    throw new Error('something wrong on patching borrowing');
   }
 });
