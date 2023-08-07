@@ -52,8 +52,8 @@ export class AuthorApi extends Author {
 }
 
 export interface Book {
-  authors: string[];
-  genres: string[];
+  authors: string[] | null;
+  genres: string[] | null;
   title: string;
   description: string;
   availableCopies: number;
