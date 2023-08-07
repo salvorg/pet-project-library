@@ -19,7 +19,7 @@ const AppToolbar = () => {
     setShowSearchState((prevState) => !prevState);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = (event: React.MouseEvent<Document, MouseEvent>) => {
     if (
       searchRef.current &&
       !searchRef.current.contains(event.target) &&
